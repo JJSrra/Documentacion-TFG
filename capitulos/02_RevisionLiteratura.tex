@@ -1,6 +1,6 @@
 \chapter{Revisión de la literatura}
 
-En este capítulo se realizará una revisión de los estudios y propuestas más innovadoras relacionadas con los algoritmos socioinspirados. Se tendrá en cuenta hasta dónde han llegado aquellos algoritmos en los que se basaron, los bioinspirados, qué impacto tienen en el panorama actual y cómo de efectivos han resultado los algoritmos socioinspirados en problemas reales hasta la fecha.
+En este capítulo se realizará una revisión de los estudios y propuestas más innovadoras relacionadas con los algoritmos socioinspirados. Se tendrá en cuenta hasta dónde han llegado aquellos algoritmos en los que se basaron, los bioinspirados, qué impacto tienen en el panorama actual y de dónde surgieron los algoritmos socioinspirados. Además, se realizará un análisis general de aquellos algoritmos socioinspirados que resulten interesantes y se verá cómo de efectivos han resultado en problemas reales hasta la fecha.
 
 \section{Estado del arte: algoritmos bioinspirados}
 
@@ -16,11 +16,34 @@ Estos ejemplos citados no son, sin embargo, nada más que la pequeña primera mu
 	\centering
 	\includegraphics[scale=0.4]{imagenes/scopus-grafico-bioinspirados.png}
 	\caption{Gráfico de publicaciones sobre algoritmos bioinspirados registradas en SCOPUS \cite{scopus-bioinspired}.}
+	\label{grafica-scopus}
 \end{figure}
 
 Dicha gráfica refleja perfectamente el auge de los algoritmos bioinspirados; de menos de diez publicaciones por año hasta el año 2004 aproximadamente, hasta los más de 100 que llevan registrándose desde 2015. El éxito de estos algoritmos se fundamenta en dos pilares: su carga conceptual es sencilla de abstraer para cualquier usuario, y generalmente aportan buenos resultados a los problemas a los que se han enfrentado.
 
-Actualmente existen algoritmos bioinspirados en cualquier rama del reino animal. Algoritmos de manadas de lobos o grupos de tiburones que acorralan a su presa, basados en bancos de peces que se mueven en grupo hacia una zona óptima, o incluso que simulan el movimiento de una polilla cuando se dirige hacia un foco de luz. Por supuesto, con tanta diversidad no tardaron en surgir técnicas que centraban su funcionamiento en un animal muy particular: el ser humano.
+La principal motivación para construir algoritmos bioinspirados es simple, a la par que consistente: si un ser vivo ha evolucionado durante siglos y siglos hasta llegar a desarrollar una técnica con la que sobrevivir en la naturaleza, dicha técnica debe ser suficientemente óptima como para resultar digna de un estudio. Es por ello que se han propuesto multitud de técnicas que simulan el comportamiento de numerosos seres vivos en su búsqueda de un objetivo.
+
+Actualmente existen algoritmos bioinspirados en cualquier rama del reino animal. Algoritmos de manadas de lobos o grupos de tiburones que acorralan a su presa, basados en bancos de peces que se mueven en grupo hacia una zona óptima, o incluso que simulan el movimiento de una polilla cuando se dirige hacia un foco de luz. Por supuesto, en los años de la explosión de los algoritmos bioinspirados (acorde con la gráfica de la figura \ref{grafica-scopus}, se podría considerar a partir de 2005), con tanta diversidad en las propuestas no tardaron en surgir técnicas cuyo concepto se basaba en un animal muy particular: el ser humano.
 
 \section{Estado del arte: algoritmos socioinspirados}
 
+Conocemos como \textbf{algoritmos socioinspirados} a aquellos que inspiran su funcionamiento en comportamientos basados en la especie humana, y que pueden aplicarse a resolver problemas de cualquier índole. Similar a sus contrapartes bioinspiradas, las técnicas socioinspiradas tienen en el centro de su modelo conceptual a un miembro que forma parte de la naturaleza, en este caso el ser humano, y se aprovecha de sus comportamientos y estilo de vida para intentar dar una solución óptima a un problema.
+
+En el apartado anterior se defendía la investigación de técnicas bioinspiradas por la constante evolución en busca de supervivencia de las distintas especies animales, y esto sucede de forma análoga con las técnicas socioinspiradas. En el caso de estas últimas, sin embargo, la mejora de soluciones no se basa en la evolución genética de la especie a lo largo de los siglos y en la selección natural, sino en el desarrollo de técnicas que permiten a nuestra sociedad alcanzar metas colectivas o individuales. Dichas técnicas pueden resultar cotidianas, pero deteniéndose a analizar cada una de ellas se puede observar que dicho comportamiento se puede trasladar a un algoritmo que explore en un espacio de búsqueda.
+
+Dada la multitud de variedades bioinspiradas que se han propuesto y estudiado desde el surgimiento de dichos algoritmos, era de esperar que se empezasen a valorar técnicas humanas para optimización de funciones. En el día a día de un ser humano suceden cuantiosas situaciones que, sin ser puramente consciente, le obligan a buscar una solución óptima a un problema menor, tales como buscar la ruta más óptima para desplazarse al lugar de trabajo, estimar la máxima cantidad de días que se puede pasar sin realizar la compra o en qué horas debe poner la lavadora para aprovechar al máximo el consumo energético. Son problemas en los que a corto plazo se pueden encontrar soluciones, pero las técnicas abordadas en este estudio abarcan temas más complejos, o a mayor escala.
+
+Cabe destacar que son unas técnicas muy recientes, y que a día de hoy ni siquiera existe un estudio formal que analice algunas de las propuestas con experimentos y análisis de rendimiento, como se busca hacer en este Trabajo de Fin de Grado. De hecho, en la actualidad estos algoritmos se encuentran aún en una fase de divulgación y propagación, es decir, los investigadores priorizan buscar nuevas propuestas de algoritmos antes que analizar las ya existentes, bien por falta de ellas o por considerarlas poco prometedoras.
+
+Kumar, Kulkarni y Satapathy \cite{socio-evolution-algorithm} han presentado la última propuesta socioinspirada actual, que data de abril de este mismo año, titulada \textit{Socio evolution \& learning optimization algorithm: A socio-inspired optimization methodology}. En este artículo, antes de explicar su algoritmo, los autores dan una pincelada sobre la situación de los algoritmos socioinspirados. En la gráfica ubicada a continuación se puede observar una clasificación de estos algoritmos, según los autores.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.9]{imagenes/socioinspired-classification.jpg}
+	\caption{Clasificación estimada de los algoritmos socioinspirados \cite{socio-evolution-algorithm}.}
+	\label{clasificacion-socioinspirados}
+\end{figure} 
+
+En dicha gráfica se encuentran cinco de los seis algoritmos que son fruto de estudio de este trabajo: del grupo de socioinspirados basados en ideologías socio-políticas, el algoritmo \textit{Ideology Algorithm} (IA) \cite{ia-article}; del grupo de basados en competiciones deportivas, el algoritmo \textit{Soccer League Competition} (SLC) \cite{slc-article}; del grupo de basados en interacción social y cultural, el algoritmo \textit{Social Emotional Optimization Algorithm} (SEA) \cite{sea-chapter}; y del grupo de basados en colonización, los algoritmos \textit{Imperialist Competitive Algorithm} (ICA) \cite{ica-conference} y \textit{Anarchic Society Optimization} (ASO) \cite{aso-article} \cite{aso-chapter}.
+
+El algoritmo restante, que no se muestra en esta gráfica, es \textit{Parliamentary Optimization Algorithm} (POA) \cite{poa-article}, y de haberlo incluido los autores en esta clasificación seguro que estaría en el primer grupo, los basados en ideologías socio-políticas. Su ausencia en la gráfica probablemente se deba al desconocimiento de su existencia por parte de los autores, ya que no es una clasificación muy extensa en la que haya habido necesidad de eliminar información.
