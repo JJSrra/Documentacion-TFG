@@ -46,4 +46,39 @@ Como se puede observar de esta hoja de ruta del algoritmo, la relación con la s
 	\end{algorithmic}
 \end{algorithm}
 
+Se puede comenzar este análisis en base a los distintos componentes del algoritmo, relacionándolos con la descripción anterior y comprobando por qué se trata de técnicas socioinspiradas.
+
+En primer lugar conviene hablar acerca de la población. Si bien habitualmente en estos algoritmos socioinspirados la población suele estar constituida de individuos, siendo esta una agrupación de los mismos, en el caso del algoritmo ICA no es así. En este algoritmo se realiza un símil con una sociedad global donde cada una de las soluciones que compone la población es como un país, o en este caso como una colonia. Por tanto, la figura del ser humano como persona individual no aparece en esta propuesta.
+
+Una vez que se han instanciado las primeras soluciones o colonias que ocuparán la población inicial, hay que seleccionar aquellas que sean más poderosas para considerarlas <<imperialistas>>, es decir, serán los líderes de cada uno de los imperios en los que se divida el problema. Por supuesto, tanto el número de colonias como el número de imperios iniciales son definidos en los parámetros del algoritmo y pueden variar si así se desea.
+
+A lo largo de todo este algoritmo se entenderá que un país es más poderoso que otro si \textbf{su evaluación para la función objetivo es menor}, dado que se trata de problemas de optimización buscando el menor valor posible. La asignación de los imperios se hace con respecto a las colonias iniciales con un menor valor para dicha función.
+
+Con los imperios constituidos y las colonias distribuidas se comienza a desarrollar el bucle principal del algoritmo, que finalizará cuando se cumpla el criterio de parada. La implementación de este algoritmo originalmente paraba tras un número de <<décadas>> (iteraciones del bucle principal), pero a fin de integrarlo con el resto de algoritmos del estudio se añadió la posibilidad de definir un criterio de parada por número de evaluaciones de la función objetivo.
+
+En cada iteración de dicho bucle cada colonia realiza un desplazamiento hacia su imperialista. El desplazamiento tiene un componente de aleatoriedad que permite que no converjan todas las soluciones en el primer imperialista nada más comenzar las iteraciones. A continuación se puede observar una representación gráfica de dicho movimiento.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.4]{imagenes/ica-desplazamiento.png}
+	\caption{Desplazamiento de una colonia hacia su imperialista, con un componente de aleatoriedad \cite{ica-conference}.}
+	\label{ica-desplazamiento}
+\end{figure}
+
+El movimiento producido $x$ queda definido por la siguiente fórmula
+
+\begin{equation}\label{ica-eq-desplazamiento1}
+x \sim U(0, \beta \times d)
+\end{equation}
+
+en la cual $d$ es la distancia entre la colonia y el imperialista y $\beta$ representa el llamado <<coeficiente de asimilación>>. Es decir, se trata de un desplazamiento hacia el imperialista donde la distancia recorrida está definida por un valor uniforme aleatorio entre 0 y la máxima distancia.
+
+Además, el ángulo $\theta$ que aparece en la figura, que desvía a la colonia de su dirección, viene calculado de la siguiente forma
+
+\begin{equation}\label{ica-eq-desplazamiento2}
+	\theta \sim U(-\gamma, \gamma)
+\end{equation}
+
+donde $\gamma$ es el parámetro que ajusta la desviación de la dirección, y que es llamado por los autores <<coeficiente de ángulo de asimilación>>.
+
 (Nota: añadir que los cambios tan dinámicos en el proceso de colonización ayudan a que el algoritmo explore el espacio de búsqueda y no caiga tan fácilmente en óptimos locales)
