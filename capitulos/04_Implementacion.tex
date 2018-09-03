@@ -1,0 +1,49 @@
+\chapter{Implementación y análisis de algoritmos}
+
+En este apartado se realizará un análisis detallado sobre cómo funciona cada uno de los algoritmos seleccionados para el estudio desde un punto de vista teórico. Se explicarán las técnicas que utiliza cada uno para llegar a la solución óptima y cómo se asemejan dichas técnicas al comportamiento humano, para de ese modo poder considerarse un algoritmo socioinspirado. Además, se arrojarán detalles destacados de la implementación de cada uno en particular, si dicha implementación así lo requiriese.
+
+Los algoritmos se analizarán en orden cronológico, siendo el más antiguo de todos Imperialist Competitive Algorithm (2007) \cite{ica-conference} y el más reciente Ideology Algorithm (2016) \cite{ia-article}.
+
+\section{Detalles generales sobre la implementación}
+
+En primer lugar, antes de comenzar con la explicación de los algoritmos, conviene dar una visión general acerca de la implementación en este estudio, cómo se ha llevado a cabo y con qué herramientas.
+
+Los algoritmos se han implementado utilizando el lenguaje de programación \textbf{Python} en su versión 3.6 \cite{python-3.6-doc}, elección personal del alumno, dada su facilidad para trabajar con vectores y matrices utilizando librerías como \textbf{Numpy} \cite{numpy-doc}, además de otras de representación gráfica como \textbf{Matplotlib} \cite{matplotlib-doc}. Poder operar de forma sencilla con múltiples matrices que habitualmente constituirán la población de soluciones de cada problema resultó un detalle determinante para tomar la decisión.
+
+Encontrar el código fuente de los algoritmos mencionados resulta una ardua tarea, ya que la mayoría de los autores no liberan su código en ninguna plataforma. En algunas ocasiones es posible encontrar versiones en el lenguaje de programación \textbf{MATLAB}, uno de los lenguajes más utilizados en el ámbito científico y de investigación por su capacidad de cómputo y de operar con fórmulas matemáticas de gran dimensión. Sin embargo, MATLAB es un software privativo y de pago, y el alumno ha querido liberar su proyecto desde el primer momento, por lo que se rechazó la idea de implementarlos en este lenguaje. Sin embargo, sí que se ha utilizado como referencia para algún algoritmo una versión de MATLAB sobre la que basar la implementación en Python.
+
+En relación a lo comentado en el párrafo anterior, el proyecto ha estado libre y alojado en la plataforma \textbf{GitHub} \cite{repositorio-tfg} desde que se comenzó la implementación, para que cualquier usuario interesado pudiese no sólo acceder a él sino también comprobar cómo está hecho, y en un futuro incluso realizar los cambios pertinentes que considerase, cumpliendo así el paradigma del software libre.
+
+\section{Imperialist Competitive Algorithm (ICA)}
+
+El primer algoritmo a analizar, \textbf{Imperialist Competitive Algorithm} o, según sus siglas, \textbf{ICA}, fue presentado por primera vez en 2007 por Atashpaz-Gargari y Lucas \cite{ica-conference}. Se trata de un algoritmo que podría ser agrupado en la subcategoría de socioinspirados basados en conquistas y colonialismo, como se procede a explicar.
+
+Este algoritmo parte de la idea de un mundo completamente colonialista, plagado de países que luchan por alzarse vencedores y conquistadores. En esta guerra constante, los países con más poder se volverían los líderes, y podrían contar con numerosas colonias a su servicio. Por otra parte, aquellos países que no pueden vencer a los demás se verían relegados a ocupar un puesto de colonia para siempre.
+
+Durante la guerra también se puede producir una revolución o alzamiento de una de las colonias contra su propio imperio. Si esta colonia resulta ser más poderosa que el actual líder, dicha posición pasa a ser suya. También puede darse el caso totalmente opuesto; si una colonia resulta realmente débil, un imperio colindante puede absorberla y hacerse más fuerte gracias a ella. Y por supuesto, un imperio puede ser colonizado al completo por otro, haciéndose así cargo de sus colonias restantes y del propio país imperial.
+
+En palabras de los propios autores del algoritmo, <<la competición imperialista con suerte convergerá a un estado en el que sólo haya un imperio y todas sus colonias se hallen en la misma posición y tengan el mismo coste que el país imperialista>>.
+
+Como se puede observar de esta hoja de ruta del algoritmo, la relación con la sociedad es evidente, aunque recuerde más a épocas pasadas que a la actualidad. Este es el funcionamiento del algoritmo a grandes rasgos, pero a continuación se detallarán las características más llamativas del mismo. Previamente se muestra un pseudocódigo del algoritmo, para ayudar a comprender cada paso del mismo antes de la explicación detallada.
+
+\begin{algorithm}
+	\caption{Imperialist Competitive Algorithm}
+	\begin{algorithmic}[1]
+		\State $imperios \gets \textit{inicializarImperios()}$
+		\While{\textbf{not} \textit{criterioParada}}
+		\For{\textbf{each} \textit{colonia}}
+		\State $colonia \gets colonia + (imperialista - colonia + rand())$
+		\If{$peso(colonia) \le peso(imperialista)$}
+		\State $imperialista \gets colonia$
+		\EndIf
+		\EndFor
+		\State $imperios \gets competicionImperial()$
+		\If{\textbf{any} \textit{imperio} \textbf{is empty}}
+		\State $imperios \gets eliminarImperio(imperio)$
+		\EndIf
+		\EndWhile
+		\State{\textbf{return} \textit{min(peso(imperialistas))}}
+	\end{algorithmic}
+\end{algorithm}
+
+(Nota: añadir que los cambios tan dinámicos en el proceso de colonización ayudan a que el algoritmo explore el espacio de búsqueda y no caiga tan fácilmente en óptimos locales)
