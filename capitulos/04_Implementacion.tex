@@ -35,7 +35,7 @@ Como se puede observar de esta hoja de ruta del algoritmo, la relación con la s
 		\While{\textbf{not} \textit{criterioParada}}
 		\For{\textbf{each} \textit{colonia}}
 		\State $colonia \gets colonia + (imperialista - colonia + rand())$
-		\If{$peso(colonia) \le peso(imperialista)$}
+		\If{$peso(colonia) < peso(imperialista)$}
 		\State $imperialista \gets colonia$
 		\EndIf
 		\EndFor
