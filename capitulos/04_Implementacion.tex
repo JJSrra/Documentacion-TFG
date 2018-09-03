@@ -96,3 +96,47 @@ Para concluir el análisis del ICA, se puede afirmar con certeza que basa muchí
 El punto crítico al algoritmo viene en torno a la exploración del espacio de búsqueda. Para ello es necesario distinguir bien en este caso cuál es la fase de exploración y cuál la de explotación. En este algoritmo se produce una exploración del espacio de búsqueda cuando hay varios imperios, y además las colonias del imperio se encuentran suficientemente separadas del imperialista como para que su avance hacia él permita valorar un considerable número de posiciones en los alrededores, pero no en las inmediaciones. Esta búsqueda en las posiciones más cercanas a la mejor solución es la que se considera la explotación, cuyo principal objetivo es comprobar si en las cercanías hay alguna posibilidad de mejora para apuntillar la solución. Esta fase suele darse en las iteraciones más avanzadas del algoritmo, cuando ya se tiene más o menos claro dónde puede estar el óptimo.
 
 Si bien se ha comentado lo interesante de la propuesta para que no se caiga de inmediato en óptimos locales y la ventaja que aporta que cada colonia tenga posibilidad de revolucionarse y dar lugar a una nueva exploración, el problema es que una o dos colonias colocadas de forma aleatoria no suponen una exploración decente. Tener pronto todas las colonias agrupadas en un mismo imperio supone contar con una fase de exploración corta, lo que hace bastante factible la posibilidad de que el algoritmo se quede en un óptimo local y no vuelva a moverse de ahí ya que el resto de las iteraciones implican casi esencialmente una fase de explotación.
+
+\section{Parliamentary Optimization Algorithm (POA)}
+
+El segundo algoritmo en la lista cronológica es \textbf{Parliamentary Optimization Algorithm}, o \textbf{POA} acorde a sus siglas, que fue presentado en 2008 \cite{poa-article} en la revista \textit{International Journal of Innovative Computing, Information \& Control}, también conocida como \textit{IJICIC}. Este algoritmo está englobado en el apartado de socioinspirados basados en ideologías socio-políticas, obviamente en la vertiente de políticas.
+
+Del algoritmo POA no ha sido posible encontrar código fuente, ni siquiera en MATLAB, por lo que la implementación es de autoría propia basada únicamente en lo que refleja el artículo, siendo lo más fiel posible a lo explicado en el mismo.
+
+Esta propuesta simula ubicarse dentro de un marco político, en un parlamento. En el mismo tendrán cabida una serie de partidos políticos que tratarán de hacerse con el control del gobierno. Dentro de cada uno tendrá lugar una competición por ascender hasta los puestos de candidato del partido, donde los distintos miembros pueden evolucionar hasta parecerse a sus candidatos, y si alguno de ellos aporta soluciones diferentes y mejores, incluso sucederles en el cargo.
+
+Constantemente se producen también una serie de debates políticos que pueden llevar a los partidos más minoritarios a desaparecer del parlamento, o a algunos de los más votados a confluir y unirse en un pacto para asegurarse estar presentes en el gobierno. Entre todos los candidatos aportados por cada partido se escoge como presidente del parlamento a aquel que sea considerado el mejor político. En caso de que haya un único partido o confluencia, se escoge igualmente al mejor representante de dicha agrupación.
+
+Este algoritmo tiene un funcionamiento sencillo pero a la vez es muy intuitivo de asociar con la sociedad, ya que se ubica en un entorno muy habitual y cotidiano. La política está presente en prácticamente cada acto de la vida diaria y la estructura de un parlamento es por todos conocida. En todo caso, los debates políticos que allí acontecen son accesibles para cualquier ciudadano y es común entender cómo funcionan y cómo se desenvuelven los partidos políticos para ganar escaños y hacerse con las elecciones.
+
+A continuación se incluye un pseudocódigo del algoritmo para comprender de forma general cuál es el funcionamiento en cuanto a pasos a seguir y procedimientos.
+
+\begin{algorithm}
+	\caption{Parliamentary Optimization Algorithm}
+	\begin{algorithmic}[1]
+		\State $parlamento \gets \textit{inicializarPartidos()}$
+		\State $candidatos_{partido_i} \gets mejoresMiembros(partido_i)$
+		\While{\textbf{not} \textit{criterioParada}}
+		\For{\textbf{each} \textit{partido}}
+		\State $miembro_i \gets (candidatos_{partido} - miembro_i) \times bias$
+		\If{$peso(miembro_i) < peso(candidato_{j,partido})$}
+		\State $candidato_{j,partido} \gets miembro_i$
+		\EndIf
+		\State $poder_{partido} \gets computarPoder(partido)$
+		\EndFor
+		\State{\textbf{confluir los 2 mejores partidos con probabilidad} $p_m$}
+		\State{\textbf{eliminar el peor partido con probabilidad} $p_d$}
+		\EndWhile
+		\State{\textbf{return} \textit{min(peso(candidatos))}}
+	\end{algorithmic}
+\end{algorithm}
+
+Se empezará a analizar este algoritmo relacionando los conceptos técnicos presentados en este pseudocódigo con la descripción en lenguaje natural realizada previamente.
+
+En el caso de esta propuesta, la población inicial está compuesta de soluciones que se interpretan como individuos humanos. A lo largo de este algoritmo se asociará cada una de las soluciones con un político particular, y su evaluación en la función objetivo del problema determinará lo válido que es dicho político dentro del parlamento.
+
+Con los primeros políticos generados, este algoritmo los agrupa por partidos, tantos como se haya indicado en los parámetros del mismo. Además, el algoritmo recibe como parámetro el número de candidatos que tiene cada partido, así que debe seleccionar de entre los mejores políticos tantos como candidatos haya, para asignarlos a los distintos grupos parlamentarios. Estos se repartirán equitativamente el resto de miembros del parlamento, para partir desde una situación de igualdad.
+
+En este punto ya se ha generado la situación inicial del problema, y se procede a entrar en el bucle principal. En cada iteración primero se produce una competición interna dentro del propio partido, y después se da pie a una cooperación entre partidos que puede llegar a buen puerto o no.
+
+La competición interna consiste en mover todos los políticos hacia sus candidatos, con un sesgo determinado que evite una congregación de todo el partido en un único punto.
