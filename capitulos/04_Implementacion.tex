@@ -170,14 +170,14 @@ La crítica a este algoritmo se basa en la forma de realizar el desplazamiento, 
 
 El siguiente algoritmo de esta lista en orden cronológico es el \textbf{Social Emotional Optimization Algorithm}, o \textbf{SEA} de acuerdo a las siglas elegidas por los autores \cite{sea-chapter} para representarlo. Esta propuesta se presentó en el libro \textit{Swarm, evolutionary, and memetic computing. First international conference on swarm, evolutionary, and memetic computing, SEMCCO} \cite{sea-book}. Este algoritmo podría ser englobado en la subcategoría de socioinspirados basados en interacción social y cultural según Kumar et al. \cite{socio-evolution-algorithm}.
 
-Esta técnica está fundada en las relaciones sociales de las personas y cómo reaccionan en función de sus aciertos y errores o de la forma de actuar de los demás. Para ello hay que tener en cuenta las acciones pasadas y cómo influyeron en el resto de la sociedad, y a su vez comprobar cómo influye en un individuo el comportamiento de los demás.
+Esta técnica socioinspirada está fundada en las relaciones sociales de las personas y cómo reaccionan en función de sus aciertos y errores o de la forma de actuar de los demás. Para ello hay que tener en cuenta las acciones pasadas y cómo influyeron en el resto de la sociedad, y a su vez comprobar cómo influye en un individuo el comportamiento de los demás.
 
 En cuanto a esto, es de esperar que si un individuo ve que el resto de la sociedad encuentra posiciones mejores a la suya, su índice de emoción disminuya, al igual que aumenta por completo si se coloca como el individuo con mejor posición en toda la población. Al principio todos los individuos comienzan con la moral al mismo nivel, pero esta variará dinámicamente en función de los resultados que se vayan obteniendo.
 
 Cuando llega el momento de que cada individuo realice su siguiente movimiento, tiene tres posibles formas de hacerlo:
 
 \begin{itemize}
-	\item Si su moral está muy alta porque es consciente de que tiene una buena posición, su movimiento simplemente le lleva a alejarse de las peores posiciones.
+	\item Si su moral está muy alta porque es consciente de que tiene una buena posición, su movimiento simplemente le lleva a alejarse de las peores posiciones a la par que se fija en su mejor posición histórica.
 	\item Si su moral es media porque aún está algo conforme consigo mismo a pesar de que sabe que puede mejorar, se alejará de las peores posiciones a la vez que busca un movimiento hacia la mejor posición que él mismo ha tenido y la mejor posición registrada por la población hasta ese momento.
 	\item Si su moral es muy baja porque es conocedor de lo mala que es su posición, buscará inspirarse en la mejor solución de la población hasta el momento.
 \end{itemize}
@@ -191,9 +191,9 @@ El paso del tiempo da lugar a que las distintas soluciones evolucionen y sepan e
 		\State $emocion_i \gets 1.0$
 		\State $sociedad_i \gets comportamiento\textit{1}()$
 		\While{\textbf{not} \textit{criterioParada}}
-		\If{$emocion(sociedad_i) > \textit{limite1}$}
+		\If{$emocion_i > \textit{limite1}$}
 		\State $sociedad_i \gets comportamiento\textit{4}()$
-		\ElsIf{$limite2 > emocion(sociedad_i) \ge \textit{limite1}$}
+		\ElsIf{$limite2 > emocion_i \ge \textit{limite1}$}
 		\State $sociedad_i \gets comportamiento\textit{3}()$
 		\Else
 		\State $sociedad_i \gets comportamiento\textit{2}()$
@@ -208,3 +208,17 @@ El paso del tiempo da lugar a que las distintas soluciones evolucionen y sepan e
 		\State{\textbf{return} \textit{peso(minimoHistorico)}}
 	\end{algorithmic}
 \end{algorithm}
+
+Se puede empezar el análisis del algoritmo entendiendo cómo se representan técnicamente la población y los distintos componentes observados en el pseudocódigo, y por tanto cómo se pueden relacionar los mismos con una técnica socioinspirada.
+
+En primer lugar, la población representa una sociedad de seres humanos, donde cada uno de los individuos de la misma es una solución al problema, generada aleatoriamente para la población inicial. En esta sociedad será donde los individuos crezcan intentando ser mejores y situarse por encima del resto. El índice de emoción de cada individuo será un valor real entre 0 y 1, siendo 1 para todos los individuos al inicio del algoritmo. El índice aumentará o decrecerá en función de los éxitos o los fracasos del individuo con respecto a sí mismo y al resto de la población.
+
+En la primera iteración del algoritmo, como todos los índices están a 1, se produce un movimiento especial que no tiene lugar en el resto del proceso. Este movimiento simplemente aleja al individuo de las peores posiciones que hay actualmente en la población, como mecanismo de defensa para no acabar en una situación como esa. Las soluciones a las que les haya tocado caer en las peores posiciones verán sus índices de emoción reducidos hasta que logren desplazarse a una zona mejor siguiendo el camino de un individuo con éxito.
+
+Este algoritmo guarda una posición histórica para cada individuo, la mejor que ha conseguido a lo largo de las iteraciones. Esta posición se usará tanto para las fórmulas de desplazamiento como para guardar la mejor solución hasta el momento, ya que este algoritmo no es elitista y permite que las mejores soluciones se pierdan de la población actual. Guardándolas se asegura sin embargo poder obtener la mejor solución encontrada a lo largo de las iteraciones cuando haya que devolver el valor final del proceso.
+
+Cada vez que se realiza un movimiento, el índice de emoción del individuo cambia. Si el movimiento le coloca en la mejor posición histórica, su emoción aumenta hasta el máximo valor, mientras que si no lo consigue dicho índice se verá decrementado en un parámetro $\Delta$ definido previamente con el algoritmo. En función de la emoción del individuo, en cada iteración optará por seguir un comportamiento u otro a la hora de desplazarse. Un comportamiento u otro queda determinado por unos límites que dividen el dominio del índice, [0,1], en tres secciones. Para ello son necesarios dos límites, que se definen como parámetros del algoritmo.
+
+El SEA puede ser interpretado como un \textbf{Particle Swarm Optimization (PSO)}, al que se le han realizado algunas modificaciones, como la memoria de posiciones históricas y la variación del comportamiento en función del índice de emoción. La idea de tener un comportamiento distinto adecuado a la situación en el tiempo de cada solución es muy interesante y da lugar a múltiples ideas que pueden mejorar esta técnica. Como algoritmo socioinspirado, este intenta darle un significado con sentido a la toma de decisiones de los individuos, para que cada rango de valores del índice de emoción corresponda a un comportamiento u otro.
+
+Al final, sin embargo, el proceso sigue siendo el mismo que en un PSO en el que las partículas (individuos) buscan acercarse a la que saben que es la mejor, aunque en este caso esta puede ser la mejor histórica y no estar presente en la población del momento. La crítica a este algoritmo recae en el manejo de los índices de emoción, ya que es muy fácil que decaigan si se ha llegado a un óptimo local ya que el algoritmo en ningún momento volverá a explorar lejos de ese punto. Si todas las soluciones posteriores resultan son peores que aquella que ha ocupado el puesto de mejor histórica los índices de todos los individuos decaerán hasta el 0, y por tanto se limitarán a buscar en los alrededores de dicho óptimo local.
