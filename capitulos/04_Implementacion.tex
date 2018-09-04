@@ -168,7 +168,7 @@ La crítica a este algoritmo se basa en la forma de realizar el desplazamiento, 
 
 \section{Social Emotional Optimization Algorithm (SEA)}
 
-El siguiente algoritmo de esta lista en orden cronológico es el \textbf{Social Emotional Optimization Algorithm}, o \textbf{SEA} de acuerdo a las siglas elegidas por los autores \cite{sea-chapter} para representarlo. Esta propuesta se presentó en el libro \textit{Swarm, evolutionary, and memetic computing. First international conference on swarm, evolutionary, and memetic computing, SEMCCO} \cite{sea-book}. Este algoritmo podría ser englobado en la subcategoría de socioinspirados basados en interacción social y cultural según Kumar et al. \cite{socio-evolution-algorithm}.
+El siguiente algoritmo de esta lista en orden cronológico es el \textbf{Social Emotional Optimization Algorithm}, o \textbf{SEA} de acuerdo a las siglas elegidas por los autores \cite{sea-chapter} para representarlo. Esta propuesta se presentó en 2010 en el libro \textit{Swarm, evolutionary, and memetic computing. First international conference on swarm, evolutionary, and memetic computing, SEMCCO} \cite{sea-book}. Este algoritmo podría ser englobado en la subcategoría de socioinspirados basados en interacción social y cultural según Kumar et al. \cite{socio-evolution-algorithm}.
 
 Esta técnica socioinspirada está fundada en las relaciones sociales de las personas y cómo reaccionan en función de sus aciertos y errores o de la forma de actuar de los demás. Para ello hay que tener en cuenta las acciones pasadas y cómo influyeron en el resto de la sociedad, y a su vez comprobar cómo influye en un individuo el comportamiento de los demás.
 
@@ -222,3 +222,62 @@ Cada vez que se realiza un movimiento, el índice de emoción del individuo camb
 El SEA puede ser interpretado como un \textbf{Particle Swarm Optimization (PSO)}, al que se le han realizado algunas modificaciones, como la memoria de posiciones históricas y la variación del comportamiento en función del índice de emoción. La idea de tener un comportamiento distinto adecuado a la situación en el tiempo de cada solución es muy interesante y da lugar a múltiples ideas que pueden mejorar esta técnica. Como algoritmo socioinspirado, este intenta darle un significado con sentido a la toma de decisiones de los individuos, para que cada rango de valores del índice de emoción corresponda a un comportamiento u otro.
 
 Al final, sin embargo, el proceso sigue siendo el mismo que en un PSO en el que las partículas (individuos) buscan acercarse a la que saben que es la mejor, aunque en este caso esta puede ser la mejor histórica y no estar presente en la población del momento. La crítica a este algoritmo recae en el manejo de los índices de emoción, ya que es muy fácil que decaigan si se ha llegado a un óptimo local ya que el algoritmo en ningún momento volverá a explorar lejos de ese punto. Si todas las soluciones posteriores resultan son peores que aquella que ha ocupado el puesto de mejor histórica los índices de todos los individuos decaerán hasta el 0, y por tanto se limitarán a buscar en los alrededores de dicho óptimo local.
+
+\section{Anarchic Society Optimization (ASO)}
+
+El algoritmo \textbf{Anarchic Society Optimization}, por sus siglas \textbf{ASO}, fue presentado por primera vez en 2011 por Ahmadi Javid \cite{aso-conference} en el Congress of Evolutionary Computation (CEC). A partir de ese momento se ha utilizado este algoritmo para resolver algunos problemas reales, como este \cite{aso-article}.
+
+Esta técnica ha sido agrupada por Kumar et al. \cite{socio-evolution-algorithm} en el subapartado de socioinspiradas basadas en colonización. Sin embargo, de acuerdo al análisis que se ha realizado para este estudio se ha determinado que un mejor grupo para él sería el de ideologías socio-políticas, y en la siguiente explicación se exponen los argumentos.
+
+ASO es un algoritmo basado en una sociedad anarquista, en la que la figura del gobierno no es necesaria y donde los propios individuos se organizan a sí mismos. Por separado o mediante grupos, podrán determinar cuál es el la mejor decisión posible en cada caso en base a sus propias experiencias y a las del resto de la sociedad.
+
+Para ello, cada individuo tiene que tomar una decisión cuando realice un movimiento: tiene que valorar si le conviene más basarse en su propia situación, en las experiencias del resto de la sociedad actual o en lo que ocurrió en el pasado. Si realiza esta comparación de forma equilibrada y aprovechando toda la información de la que dispone (se supone que en esta sociedad el individuo está al tanto de las decisiones que toman el resto) podrá llegar hasta una posición más favorable, o incluso óptima.
+
+Además, los individuos de una sociedad anárquica pueden experimentar cambios radicales de parecer y dirigirse hacia posiciones que no tienen por qué ser necesariamente mejores. En palabras del propio autor original, los individuos <<también se comportan aventurada e irracionalmente, moviéndose hacia posiciones inferiores que ya han visitado>>. 
+
+Cuando han valorado todas las posibilidades de movimiento según las directrices indicadas anteriormente, los individuos deciden qué estrategia seguir para tomar su nueva posición. Pueden quedarse con la estrictamente mejor de las soluciones planteadas o bien intentar escoger lo mejor de cada una de ellas.
+
+A lo largo del tiempo se espera que al menos un buen porcentaje de la sociedad haya aprendido las buenas conductas y descubra la zona del espacio donde mejor ubicados pueden estar, aunque haya otros miembros que no lo tengan tan claro y deambulen por el resto del espacio explorando diferentes rutas. Al final resulta ambicioso esperar que toda la sociedad converja en un mismo punto, y es normal que se produzcan escisiones así, como bien representa el algoritmo.
+
+A continuación se muestra un pseudocódigo que ayuda a expresar este proceso en términos más cercanos a la implementación.
+
+\begin{algorithm}
+	\caption{Anarchic Society Optimization}
+	\begin{algorithmic}[1]
+		\State $sociedad \gets \textit{inicializarPoblacion()}$
+		\While{\textbf{not} \textit{criterioParada}}
+		\State $Mp^{current}_i \gets movimientoBasadoEnPropiaPosicion()$
+		\State $Mp^{society}_i \gets movimientoBasadoEnSociedad()$
+		\State $Mp^{past}_i \gets movimientoBasadoEnHistoria()$
+		\State $sociedad_i \gets seleccionMovimiento(Mp^{current}_i, Mp^{society}_i, Mp^{past}_i)$
+		\State{\textbf{actualizar mejores posiciones históricas}}
+		\EndWhile
+		\State{\textbf{return} \textit{peso(minimoHistorico)}}
+	\end{algorithmic}
+\end{algorithm}
+
+Este algoritmo no es muy complejo en cuanto a instrucciones se refiere, sin embargo a continuación se analizará cómo se ha implementado la propuesta y qué decisiones se han tomado.
+
+En primer lugar es conveniente notar que todo el peso de este algoritmo recae sobre las decisiones de movimiento dado que es realmente lo que tiene carga de trabajo en cada iteración. Este algoritmo solamente debe mantener la mejor posición que cada individuo ha conseguido hasta esa iteración y utilizar tres fórmulas matemáticas que determinen la nueva posición acorde a cada movimiento. La cuestión es averiguar si dichas fórmulas son suficiente para hallar una solución óptima en el espacio de búsqueda.
+
+!!
+
+!!
+
+\textbf{(Duda: ¿incluir todas las fórmulas aquí? ¿Hablar de la mutación que yo he añadido?)}
+
+!!
+
+!!
+
+El movimiento basado en su situación actual viene determinado por un parámetro definido como el autor como <<inestabilidad>> (\textit{fickleness}) o tendencia al cambio. Un valor bajo de este atributo indicará al individuo que debería seguir explorando el espacio por sus cercanías, mientras que un valor alto repercutirá en que actúe de forma individualista y cambie radicalmente de posición.
+
+En el movimiento basado en el resto de la sociedad influye, por supuesto, la mejor solución que el individuo puede encontrar en la iteración actual. Él conoce la posición del resto de sus compañeros, y sabe en quién debe fijarse, pero en lugar de automáticamente copiarlo calcula un <<índice de irregularidad externa>>. De nuevo existe un umbral relacionado con este índice que determina si el individuo debe proceder a desplazarse hacia la mejor posición de la iteración actual o por el contrario se rebela y actúa por su cuenta generando una posición alejada de la misma.
+
+Por último, el movimiento basado en el registro histórico es muy similar al que se acaba de explicar. En este caso la posición en la que el individuo se fija no es la mejor actual sino la mejor histórica, y el índice calculado se denomina <<índice de irregularidad interna>>. Existe también un umbral análogo, solamente que en este caso el desplazamiento se realiza lógicamente hacia la mejor posición que ha habido en todas las iteraciones.
+
+Con todos los posibles movimientos evaluados, el individuo debe tomar una decisión. En este punto entra el operador de selección para elegir con qué movimiento se queda, y la definición del algoritmo en el \textit{paper} original aporta dos posibles soluciones: que se elija según un modelo \textbf{elitista}, quedándose con la mejor posición de las tres generadas, o que se elija según un modelo \textbf{secuencial}, y en cada iteración cambie de uno a otro siguiendo la misma serie. Cada uno tiene sus ventajas e inconvenientes, que además son principalmente excluyentes del otro método. En el caso elitista se consumen muchas evaluaciones de la función objetivo, el triple que en otro algoritmo evolutivo común, pero sin embargo se produce una exploración del espacio más variada. En el caso secuencial tan sólo se producen una tercera parte de las evaluaciones, pero estas no dan la seguridad de ser la mejor en cada caso. En lo que a la implementación de este estudio corresponde, se ha optado por desarrollar la opción \textbf{elitista}.
+
+Este algoritmo también basa su funcionamiento en un \textbf{Particle Swarm Optimization (PSO)}, ya que hasta el propio autor dedica un apartado a la comparación del ASO con el PSO \cite{aso-conference}. En dicho apartado hace una similitud entre los vectores de velocidad del PSO y los movimientos basados en cada uno de los comportamientos anteriormente descritos. En general, asemeja la forma de desplazarse de cada uno de los algoritmos buscando en cada caso del ASO un objetivo distinto dependiendo del movimiento escogido.
+
+\section{Soccer League Competition (SLC)}
