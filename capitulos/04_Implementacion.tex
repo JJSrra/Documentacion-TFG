@@ -139,4 +139,29 @@ Con los primeros políticos generados, este algoritmo los agrupa por partidos, t
 
 En este punto ya se ha generado la situación inicial del problema, y se procede a entrar en el bucle principal. En cada iteración primero se produce una competición interna dentro del propio partido, y después se da pie a una cooperación entre partidos que puede llegar a buen puerto o no.
 
-La competición interna consiste en mover todos los políticos hacia sus candidatos, con un sesgo determinado que evite una congregación de todo el partido en un único punto.
+La competición interna consiste en mover todos los políticos hacia sus candidatos, con un sesgo determinado que evite una congregación de todo el partido en un único punto. Para ello se sigue la siguiente fórmula
+
+\begin{equation}\label{poa-eq-desplazamiento}
+	p' = p_0 + \eta(\frac{\sum_{i=1}^{\theta}(p_i - p_0) \times f(p_i)}{\sum_{i=1}^{\theta}f(p_i)})
+\end{equation}
+
+donde:
+
+\begin{itemize}
+	\item $p'$ es la nueva posición
+	\item $p_0$ es la posición actual del político
+	\item $p_i$ representa a cada candidato del partido
+	\item $\eta$ es el sesgo que se aplica al movimiento
+	\item $f(p)$ es la evaluación de la función objetivo para el político $p$
+	\item $\theta$ es el número de candidatos por partido
+\end{itemize}
+
+Lo importante en este algoritmo es que, según viene especificado en la propia descripción del mismo, el desplazamiento únicamente tiene lugar \textbf{si la nueva posición es mejor que la anterior.} Si en el proceso de desplazamiento algún político resulta estar mejor ubicado que alguno de los actuales candidatos, estos intercambian sus puestos y el anterior miembro regular del partido pasa a ser un nuevo candidato. De esta forma el resto de los políticos en futuras iteraciones se desplazarán hacia esta nueva solución.
+
+Cuando termina la competición interna del partido, se produce la fase de cooperación. En este momento existen dos parámetros $p_m$ y $p_d$ que simbolizan la probabilidad de que los dos mejores partidos se unan (\textit{merge}) y de que el peor partido sea expulsado del parlamento (\textit{delete}), respectivamente. En caso de que se dé la primera condición probabilística, los dos mejores partidos dejan a un lado sus diferencias y confluyen en uno solo, escogiendo como candidatos a los mejores miembros entre ambos partidos sin importar su partido de origen. Si por otro lado, se produce el segundo caso, el partido es eliminado del parlamento y todos los miembros desaparecen del mismo, por lo que el parlamento ve reducido su tamaño, haciendo hincapié en las mejores soluciones para el resto de sus iteraciones.
+
+Este algoritmo basa su funcionamiento en el \textbf{Particle Swarm Optimization} o \textbf{PSO}, comportándose de manera muy similar pero dando un carácter socio-político al entorno del mismo. En este caso cada partido funciona como un algoritmo PSO, siendo los políticos las partículas y los candidatos aquellas situadas en mejor posición a las que el resto se acercan. En cada iteración la posibilidad de hacer confluir dos partidos puede permitir aumentar la exploración, entendiéndose que un político puede optar a acercarse a un candidato que antes no conocía, y por el camino explorar una zona desconocida.
+
+La principal novedad que aporta este algoritmo con respecto al PSO es la de tomar como referencia de desplazamiento un número mayor de partículas, en particular el que se desee y se especifique en la llamada al algoritmo. Esto permite que se puedan generar más de una <<buena posición>> hacia la que dirigirse, explorando también los caminos intermedios.
+
+La crítica a este algoritmo se basa en la forma de realizar el desplazamiento, que limita la exploración. Al no permitir que las partículas pasen a ocupar una peor posición se puede caer fácilmente en un óptimo local si se estabilizan en las primeras iteraciones. Además, el sesgo es un parámetro fijado según han documentado los propios autores \cite{poa-article} y eso resta aleatoriedad a la búsqueda y puede frenarla totalmente en un determinado punto en el que siempre se realice el mismo desplazamiento y ninguna partícula mejore su posición.
