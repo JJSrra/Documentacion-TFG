@@ -281,3 +281,54 @@ Con todos los posibles movimientos evaluados, el individuo debe tomar una decisi
 Este algoritmo también basa su funcionamiento en un \textbf{Particle Swarm Optimization (PSO)}, ya que hasta el propio autor dedica un apartado a la comparación del ASO con el PSO \cite{aso-conference}. En dicho apartado hace una similitud entre los vectores de velocidad del PSO y los movimientos basados en cada uno de los comportamientos anteriormente descritos. En general, asemeja la forma de desplazarse de cada uno de los algoritmos buscando en cada caso del ASO un objetivo distinto dependiendo del movimiento escogido.
 
 \section{Soccer League Competition (SLC)}
+
+El siguiente algoritmo en orden cronológico es el \textbf{Soccer League Competition}, \textbf{SLC} según sus siglas. Fue presentado en 2014 por Moosavian y Kasaee Roodsari \cite{slc-nonlinear-eq}, en una propuesta para resolver ecuaciones no lineales. Más adelante el propio Moosavian ha presentado otras publicaciones aplicando este algoritmo a problemas de la mochila (\textit{knapsack problems}) \cite{slc-knapsack} y a un problema más real, como la distribución de agua en una red \cite{slc-article}. El algoritmo puede ubicarse en el subapartado de socioinspirados basados en comportamiento competitivo, según Kumar et al. \cite{socio-evolution-algorithm}
+
+El autor del algoritmo subió el código a MathWorks \cite{slc-matlab} por lo que se pudo utilizar este código como referencia para la implementación en Python. Tras leer detenidamente las publicaciones, se ha seguido principalmente la estructura de este código apoyándose en los detalles explicados en los \textit{papers}.
+
+En este algoritmo se ubica el problema en un marco deportivo, en particular en una liga de fútbol. La población está constituida por equipos, cada uno de ellos con sus diferentes jugadores. A su vez, se distingue entre jugadores titulares y suplentes, y unos lógicamente tienen más importancia que los otros. En este panorama el objetivo de cada jugador es llegar a ser el mejor de la liga, o en su defecto al menos ser lo suficientemente bueno como para que los mejores equipos de la competición quieran contar con él en su plantilla.
+
+Los equipos compiten entre sí a lo largo de temporadas, y los jugadores mejoran en función de su resultado en los partidos, y de la influencia que hayan tenido en el juego. Un jugador titular mejorará más que uno suplente, y si algún titular baja el nivel puede ser relegado al banquillo. A su vez, si un jugador suplente no da la talla para el equipo, este puede despedirle y fichar un nuevo recambio para el próximo partido. El movimiento dicta que los titulares buscan parecerse al \textit{<<Super Star Player>>} para optar a jugar en mejores equipos, mientras que los suplentes intentan llegar al nivel medio de los titulares de su equipo, a fin de encontrar un puesto en la rotación. Con respecto al equipo perdedor, un porcentaje de sus jugadores intentará entrenar alguna nueva técnica con la que vencer a ese equipo en el próximo partido.
+
+Cuando acaba la temporada los mejores equipos se hacen con los mejores jugadores, dejando los peores para los equipos más humildes. Así, la siguiente temporada los jugadores más prometedores pueden seguir mejorando al estar rodeados de un entorno a su altura, y los humildes pueden destacar dentro de su propio equipo, pudiendo llegar a llamar la atención de uno más potente. El mejor jugador, o \textit{<<Super Star Player>>} según el autor, será el que el algoritmo devuelva como resultado de todas las temporadas.
+
+A continuación se muestra un pseudocódigo del algoritmo que explique de manera más técnica los detalles que lo rodean.
+
+\begin{algorithm}
+	\caption{Soccer League Competition}
+	\begin{algorithmic}[1]
+		\State $liga \gets \textit{inicializarLiga()}$
+		\While{\textbf{not} \textit{criterioParada}}
+		\For{\textbf{each} \textit{par($equipo_i, equipo_j$)}}
+		\State $vencedor, perdedor \gets partido(equipo_i, equipo_j)$
+		\State $titulares_{vencedor} \gets operadorImitacion()$
+		\State $suplentes_{vencedor} \gets operadorProvocacion()$
+		\EndFor
+		\State{\textbf{reordenar jugadores en función de su fitness}}
+		\If {$condicionDescenso$}
+		\State $equipo_{peor} \gets nuevoEquipo()$
+		\EndIf
+		\EndWhile
+		\State{\textbf{return} \textit{peso(superStarPlayer)}}
+	\end{algorithmic}
+\end{algorithm}
+
+Con este pseudocódigo comprendido, se procede a relacionar el comportamiento explicado anteriormente con las instrucciones que se muestran, así como a asociar cada uno de los componentes a su contraparte socioinspirada.
+
+En primer lugar la población en este caso está compuesta de jugadores. Ellos son los que representan las soluciones al problema, y que irán evolucionando conforme el proceso algorítmico tenga lugar. Esta población se divide en equipos, cada uno de los cuales cuenta con sus propios jugadores, y dicha plantilla con jugadores titulares y jugadores suplentes. Los titulares serán las mejores soluciones del equipo y los suplentes aquellas no tan buenas.
+
+Las soluciones deben estar ordenadas en cada <<temporada>> (que corresponde a una iteración del bucle principal), por lo que el primer equipo de la liga siempre empezará la temporada con los mejores jugadores, mientras el último será el que se quede con los peores. Sin embargo, a mitad de cada temporada puede darse el caso de que un jugador de un equipo más humilde llegue a dar una solución suficientemente buena como para ocupar las mejores posiciones de la liga. En dicho caso, este jugador será fichado por el mejor equipo cuando termine la temporada.
+
+El proceso de la temporada consiste en que cada equipo juegue un partido contra el resto de equipos, y en función del resultado sus jugadores mejorarán de una u otra manera. Este partido se simula calculando el coste de cada equipo participante, estimando la probabilidad de cada uno para salir vencedor, y a continuación se genera un valor aleatorio que determine qué equipo es el que gana.
+
+Los jugadores titulares del equipo ganador realizan un movimiento hacia el mejor jugador de la liga, el \textit{<<Super Star Player>>}. Si dicho movimiento no supone una mejora, realizan un movimiento hacia el \textit{<<Star Player>>} de su propio equipo, es decir, su mejor jugador. En caso de que tampoco se encuentre una mejora, intenta hacer un último movimiento aleatorio hacia una posición totalmente distinta. Si el resultado sigue sin mejorar, el jugador no se mueve a consecuencia de ese partido.
+
+Los jugadores suplentes del equipo vencedor deben intentar parecerse a los jugadores titulares, con esperanza de ocupar su puesto. Para ello se introduce el operador de gravedad, que aplicado a los jugadores titulares del equipo representa la posición media que ocupan en el espacio de búsqueda. Ese será el punto al que el jugador suplente intente desplazarse. En caso de que no dé un buen resultado, realiza un movimiento similar a la inversa, alejándose de ese centro de gravedad. Si este movimiento tampoco supone una mejora a la posición inicial el jugador es despedido del equipo y un nuevo suplente generado aleatoriamente ocupa su lugar.
+
+Con respecto al equipo perdedor, el \textit{paper} original no especifica nada, y sin embargo el código MATLAB descargado \cite{slc-matlab} incluye una ligera mutación que aporta variedad al proceso de búsqueda. Esta modificación ha sido plasmada en la implementación de este estudio, y se basa en seleccionar tres miembros de la plantilla titular y mutar un porcentaje de sus componentes. Solamente si la mejora resulta mejor que el original, la mutación queda registrada. A continuación se seleccionan dos suplentes de dicho equipo perdedor y se genera un cruce genético entre ellos, obteniendo dos nuevas soluciones. El equipo reordena su plantilla y se queda con los mejores jugadores de todos los generados, liberando a los peores.
+
+Finalmente, al final de la temporada los jugadores vuelven a ser ordenados, pero esta vez a nivel global, lo que simula el fichaje de los mejores jugadores por el mejor equipo. Los suplentes del primer equipo son mejores que los titulares del segundo equipo, y así sucesivamente, planteando una liga donde claramente existe un equipo con suficiente poder adquisitivo para hacerse con todos los mejores jugadores. Si se ha especificado el componente de descenso, cuando se haya cumplido la condición necesaria el peor equipo queda eliminado de la competición y es rellenado con nuevos jugadores generados aleatoriamente, a fin de aportar mayor exploración a lo largo de todo el proceso.
+
+(Incluir aquí conclusión final de SLC relacionándolo con un algoritmo evolutivo, ¿PSO?)
+
+\section{Ideology Algorithm (IA)}
