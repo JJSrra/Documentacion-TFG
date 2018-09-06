@@ -322,3 +322,36 @@ Finalmente, al final de la temporada los jugadores vuelven a ser ordenados, pero
 (Incluir aquí conclusión final de SLC relacionándolo con un algoritmo evolutivo, ¿PSO?)
 
 \section{Ideology Algorithm (IA)}
+
+Por último, el algoritmo socioinspirado más reciente del estudio es el \textbf{Ideology Algorithm}, también referido como \textbf{IA} por sus siglas. Se trata de un algoritmo presentado por Ting Huan et al. \cite{ia-article} en 2016, por lo que se puede considerar muy actual en el momento de redacción de este trabajo. En su agrupación de algoritmos socioinspirados, Kumar et al. \cite{socio-evolution-algorithm} lo clasifican en el grupo de los basados en ideologías socio-políticas.
+
+Esta propuesta parte de una idea similar a la del algoritmo \textbf{POA} \cite{poa-article}, presentado previamente en este mismo capítulo, ya que también tiene lugar en un contexto político en el que distintos partidos tratan de hacerse con el control del gobierno. Estos están representados por un líder, el que se equiparía al presidente del partido, aunque la figura del vicepresidente, o segundo mejor miembro del partido, también juega un papel fundamental.
+
+En este algoritmo, el líder tiene que intentar mantenerse al frente de su partido a la par que intenta ascender hasta colocarse como presidente del gobierno. Para esto pasa por tres fases, una de introspección, otra de competición local y una tercera de competición global. Durante la fase de introspección, el líder del partido busca en torno a su actual posición para intentar mejorar de cara a la siguiente fase. Durante la competición local busca en torno al segundo mejor político de su partido, al vicepresidente, para intentar mantener su puesto y adelantarse a un posible movimiento futuro de este. Por último, en la competición global el líder calcula un movimiento similar a los anteriores pero con respecto al actual presidente del gobierno. Una vez que ha valorado todos los movimientos, selecciona uno utilizando el método de la ruleta (\textit{<<Roulette Wheel Selection>>}) presentado por Kumar y Jyotishree en 2012 \cite{roulette-wheel-selection}.
+
+Cuando el líder de cada partido ha realizado su movimiento, y previamente a que el resto de los miembros tomen su propio movimiento en el debate político, el peor miembro de cada partido tiene que valorar si sigue sintiéndose afín a dicha organización o si prefiere abandonarla. En caso de que sus diferencias con el segundo peor miembro sean suficientemente grandes, el miembro abandona el partido y se afilia a otro seleccionado al azar.
+
+En este momento sí se produce el movimiento del resto de miembros. Estos buscan mejorar su posición en los alrededores, a la par que intentan parecerse al líder de su partido. Tras actualizar su posición, si alguno de los miembros se ha convertido en el mejor político del partido pasa a ocupar el puesto de líder. En resumen, se reorganiza el partido en función de las nuevas aptitudes de los miembros.
+
+Finalmente, el político que ocupe el puesto de presidente del gobierno cuando termine la ejecución del algoritmo será considerado la solución óptima encontrada por el algoritmo. En el siguiente pseudocódigo se puede este funcionamiento.
+
+\begin{algorithm}
+	\caption{Ideology Algorithm}
+	\begin{algorithmic}[1]
+		\State $partidos \gets \textit{inicializarPoblacion()}$
+		\While{\textbf{not} \textit{criterioParada}}
+		\State{\textbf{ordenar políticos en función de su fitness}}
+		\State $introspeccion_i \gets introspeccion(lider_i)$
+		\State $compLocal_i \gets competicionLocal(lider_i)$
+		\State $compGlobal_i \gets competicionGlobal(lider_i)$
+		\State $lider_i \gets seleccionMovimiento(introspeccion_i, compLocal_i, compGlobal_i)$
+		\If {$(penultimo_i - peor_i) > T$}
+		\State $peor_i \gets elegirNuevoPartido()$
+		\EndIf
+		\For{\textbf{each} \textit{politico}}
+		\State $politico \gets nuevoDesplazamiento()$
+		\EndFor
+		\EndWhile
+		\State{\textbf{return} \textit{min(peso($lider_i$))}}
+	\end{algorithmic}
+\end{algorithm}
