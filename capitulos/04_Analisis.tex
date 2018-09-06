@@ -355,3 +355,17 @@ Finalmente, el político que ocupe el puesto de presidente del gobierno cuando t
 		\State{\textbf{return} \textit{min(peso($lider_i$))}}
 	\end{algorithmic}
 \end{algorithm}
+
+Con el pseudocódigo claro se puede proceder a analizar el funcionamiento del algoritmo adecuadamente, utilizando terminología más directa.
+
+En primer lugar se puede relacionar la población inicial con el parlamento, o el gobierno, depende de la interpretación que se dé a este contexto. Sea como fuere, cada individuo del mismo, reflejado como político en el análisis representado anteriormente, es un vector solución al problema. Estas soluciones serán las que vayan evolucionando a lo largo de las iteraciones del algoritmo buscando encontrar el óptimo global de la función objetivo.
+
+Ordenando a los políticos en función de su ajuste o fitness se puede obtener en cada iteración quién es el miembro de cada partido que actúa como líder. Este será el que experimente las tres fases previas al movimiento del resto de miembros. En la fase de introspección, se realizará una pequeña mutación en las características de su vector solución, a fin de explorar el espacio de búsqueda contiguo a su actual posición. En la competición local y en la global, en la que el líder del partido se intenta aproximar a las posiciones contiguas a la segunda mejor solución de su partido y a la mejor posición global existente en dicha iteración, respectivamente, se sucede un proceso similar pero cambiando el objetivo de desplazamiento.
+
+Estos movimientos constituyen \textbf{una búsqueda local} que tiene lugar siempre sobre la mejor solución de cada partido, lo que puede ayudar a mejorar los resultados dedicando más evaluaciones a aquellas soluciones con potencial de ser óptimas.
+
+Y si estos movimientos potencian la fase de explotación, la fase de exploración a su vez se ve reforzada por la posibilidad que tienen los políticos de abandonar un partido. El símil con no ser afín a su partido viene determinado por la distancia existente entre el inmediatamente peor representante del partido y él mismo. Si esta distancia supera el límite de deserción establecido en el algoritmo, el político se unirá a otro partido al azar. Esto permite que se puedan explorar nuevas situaciones ya que acercarse a uno u otro líder político puede ser sustancialmente distinto dependiendo del miembro que realice el desplazamiento.
+
+Cuando todos los demás miembros del parlamento se han movido, en este caso hacia el líder de su partido y explorando a la par su posición contigua, se da por finalizada una iteración del bucle principal y se reordenan las posiciones de cada partido. Además, si alguno de los nuevos líderes resulta ser mejor que el actual presidente, porque posee un valor de fitness mejor, este pasa a ocupar dicho cargo.
+
+El algoritmo IA tiene sus raíces también en un Particle Swarm Optimization, como los propios autores indican en su artículo \cite{ia-article}. Cada partido funciona como un pequeño modelo de PSO, en el que el líder político del partido simboliza la partícula mejor situada hacia la que el resto se desplazan. Al existir un variado número de pequeños PSOs, la exploración es mayor, pero aún destaca más por el hecho de que estos grupos son capaces de interactuar entre ellos en el proceso de exploración. Así, el líder de un partido puede verse influenciado por la posición de otro, o bien un miembro recién afiliado al partido puede ayudar a dirigirlo a una zona inexplorada del espacio.
