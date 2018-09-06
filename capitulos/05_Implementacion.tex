@@ -1,15 +1,107 @@
-\chapter{Implementación y análisis de algoritmos}
+\chapter{Implementación}
 
-En este apartado se mostrarán los detalles más destacados de la implementación de cada algoritmo estudiado, comentando sus particularidades y resumiendo lo que ha supuesto esta fase en cuanto al desarrollo completo del proyecto.
+En este capítulo se mostrarán los detalles más destacados de la implementación de cada algoritmo estudiado, comentando sus particularidades principalmente en cuanto a parámetros, explicando cómo utilizarlo y resumiendo lo que ha supuesto esta fase en cuanto al desarrollo completo del proyecto. Además se realizará una crítica acerca de aquellas situaciones que, por malas prácticas ajenas a este estudio, han supuesto taras en el desarrollo del mismo.
 
-\section{Detalles generales sobre la implementación}
+\section{Detalles acerca de la implementación}
 
-En primer lugar, antes de comenzar con la explicación de los algoritmos, conviene dar una visión general acerca de la implementación en este estudio, cómo se ha llevado a cabo y con qué herramientas.
+En primer lugar, antes de comenzar a valorar las características de implementación de los algoritmos, conviene dar una visión general acerca de cómo se ha llevado a cabo este estudio y con qué herramientas.
 
-Los algoritmos se han implementado utilizando el lenguaje de programación \textbf{Python} en su versión 3.6 \cite{python-3.6-doc}, elección personal del alumno, dada su facilidad para trabajar con vectores y matrices utilizando librerías como \textbf{Numpy} \cite{numpy-doc}, además de otras de representación gráfica como \textbf{Matplotlib} \cite{matplotlib-doc}. Poder operar de forma sencilla con múltiples matrices que habitualmente constituirán la población de soluciones de cada problema resultó un detalle determinante para tomar la decisión.
+Los algoritmos se han implementado utilizando el lenguaje de programación \textbf{Python} en su versión 3.6 \cite{python-3.6-doc}, elección personal del alumno, dada su facilidad para trabajar con vectores y matrices utilizando librerías tan útiles como \textbf{Numpy} \cite{numpy-doc}. Poder operar de forma sencilla con múltiples matrices que habitualmente constituirán la población de soluciones de cada problema resultó un detalle determinante para tomar la decisión.
 
 Encontrar el código fuente de los algoritmos mencionados resulta una ardua tarea, ya que la mayoría de los autores no liberan su código en ninguna plataforma. En algunas ocasiones es posible encontrar versiones en el lenguaje de programación \textbf{MATLAB}, uno de los lenguajes más utilizados en el ámbito científico y de investigación por su capacidad de cómputo y de operar con fórmulas matemáticas de gran dimensión. Sin embargo, MATLAB es un software privativo y de pago, y el alumno ha querido liberar su proyecto desde el primer momento, por lo que se rechazó la idea de implementarlos en este lenguaje. Sin embargo, sí que se ha utilizado como referencia para algún algoritmo una versión de MATLAB sobre la que basar la implementación en Python.
 
 En relación a lo comentado en el párrafo anterior, el proyecto ha estado libre y alojado en la plataforma \textbf{GitHub} \cite{repositorio-tfg} desde que se comenzó la implementación, para que cualquier usuario interesado pudiese no sólo acceder a él sino también comprobar cómo está hecho, y en un futuro incluso realizar los cambios pertinentes que considerase, cumpliendo así el paradigma del software libre.
 
+Con respecto a detalles de diseño de los algoritmos, se han implementado como \textbf{funciones que pueden ser importadas y llamadas} desde cualquier fichero Python que tenga acceso a ellas. Cada algoritmo recibe una serie de parámetros distinta, que depende de la interpretación que se ha hecho con respecto al \textit{paper} o de los que se encuentren en uno de los códigos previamente implementados en otro lenguaje. Algunos de los parámetros son comunes dado a la evidente importancia de los mismos en cualquier algoritmo evolutivo, como la función de evaluación, el tamaño de la población, el dominio de las variables, la dimensión del problema o el número máximo de evaluaciones. El resto de parámetros propios de cada algoritmo que haya sido interesante modificar para la experimentación se especificarán en el siguiente apartado.
+
+Como extra que no incluían las propuestas, y como hay funciones que así lo requieren, se ha implementado para cada algoritmo la posibilidad de incluir un dominio de variables para la población inicial, para aquellos casos en los que el óptimo se encuentre fuera de esos límites que se fijan al inicio del problema.
+
+\subsection{Imperialist Competitive Algorithm (ICA)}
+
+La implementación del ICA en Python no pudo ser encontrada en internet, sin embargo sí que se encontró el código fuente en MATLAB, subido por el propio autor del \textit{paper} \cite{ica-matlab}. Este código se ha usado como referencia para implementarlo de forma similar en Python, ya que algunos detalles varían con respecto a la literatura.
+
+Para lanzar este algoritmo hay que importar la función \texttt{ICA} del fichero Python con el mismo nombre. Para esta función son muy importantes los siguientes parámetros, aparte de los mencionados en el apartado anterior:
+
+\begin{itemize}
+	\item \texttt{ncountries} $\Rightarrow$ indica el tamaño de la población inicial.
+	\item \texttt{nimperialists} $\Rightarrow$ indica el número de imperios en los que se dividirá el problema en la primera iteración.
+	\item \texttt{evaluationCriteria} $\Rightarrow$ valor booleano que especifica el criterio de parada a seguir por el algoritmo. Si se especifica a \texttt{True} será por evaluaciones de la función objetivo, o será por iteraciones del bucle principal si se indica \texttt{False}.
+	\item \texttt{decades} $\Rightarrow$ se tendrá en cuenta este valor como tope de iteraciones a realizar por el algoritmo si no se especifica criterio de parada por evaluaciones.
+\end{itemize}
+
+El resto de valores son parámetros técnicos especificados por el \textit{paper} o extraídos del código MATLAB, por lo que se han dejado como aparecen por defecto.
+
+\subsection{Parliamentary Optimization Algorithm (POA)}
+
+Del algoritmo POA no ha sido posible encontrar código fuente, ni siquiera en MATLAB, por lo que la implementación es de autoría propia basada únicamente en lo que refleja el artículo, siendo lo más fiel posible a lo explicado en el mismo.
+
+Para lanzar este algoritmo es necesario importar la función \texttt{POA} del fichero Python homónimo. Sus principales parámetros, aparte de los comunes, son los siguientes:
+
+\begin{itemize}
+	\item \texttt{nparties, nmembers, ncandidates} $\Rightarrow$ estos parámetros determinan la población inicial y su estructura, en lugar de ser definida mediante un parámetro único. \texttt{nmembers} representa el total de miembros de un partido, incluyendo miembros regulares y candidatos.
+\end{itemize}
+
+El resto de los parámetros son valores numéricos especificados en el paper que sirven para ajustar fórmulas, y que generalmente no van a cambiar salvo que se busque un ajuste de parámetros específico.
+
+\subsection{Social Emotional Optimization Algorithm (SEA)}
+
+El algoritmo SEA no ha sido posible encontrarlo implementado, ni en Python ni en ningún otro lenguaje, así que su implementación ha sido derivada únicamente del contenido del que se disponía en el \textit{paper}.
+
+Para lanzar este algoritmo se debe importar la función \texttt{SEA} del fichero Python del mismo nombre, y llamarla con los parámetros que se prefieran. Aparte de los comunes indicados al comienzo de este capítulo, SEA cuenta con los siguientes, que han resultado importantes:
+
+\begin{itemize}
+	\item \texttt{nindividuals} $\Rightarrow$ define el tamaño de la población inicial.
+	\item \texttt{k1, k2, k3} $\Rightarrow$ son parámetros que afectan a los movimientos de los individuos, y que no tienen un significado semántico claro.
+	\item \texttt{emotion\_decrease} $\Rightarrow$ el valor de emoción que pierde un individuo cada vez que no logra encontrar la mejor solución.
+	\item \texttt{lower\_threshold, upper\_threshold} $\Rightarrow$ definen los umbrales de separación de unos movimientos y otros.
+\end{itemize}
+
+\subsection{Anarchic Society Optimization (ASO)}
+
+Los autores no han revelado el código de este algoritmo, y tampoco se ha encontrado ninguna implementación en ningún lenguaje en internet. Por tanto, este algoritmo se ha implementado únicamente en función de lo interpretado de los \textit{papers}.
+
+Para ejecutar el ASO se debe importar la función \texttt{ASO} del fichero del mismo nombre, y llamarla con los argumentos indicados al comienzo de este capítulo, además de estos particulares:
+
+\begin{itemize}
+	\item \texttt{nindividuals} $\Rightarrow$ el número de individuos de la población inicial.
+	\item \texttt{fickleness\_rate} $\Rightarrow$ el índice de inestabilidad de los individuos, que influye en su toma de decisiones. Debe estar entre 0 y 1.
+	\item \texttt{external\_rate, internal\_rate} $\Rightarrow$ dos índices que influyen en la toma de decisiones, el primero para basarse en la mejor solución actual y el segundo para basarse en la mejor solución histórica.
+	\item \texttt{external\_threshold, internal\_threshold} $\Rightarrow$ dos umbrales que definen cómo de probable es que el individuo siga el camino correspondiente al parámetro anterior o que realice un movimiento totalmente aleatorio.
+\end{itemize}
+
+\subsection{Soccer League Competition (SLC)}
+
+El autor del SLC subió el código a MathWorks \cite{slc-matlab} por lo que se pudo utilizar este como referencia para la implementación en Python. Tras leer detenidamente las publicaciones sobre este algoritmo, se ha seguido principalmente la estructura de este código apoyándose en los detalles explicados en los \textit{papers}.
+
+Para utilizarlo es necesario importar la función \texttt{SLC} del fichero Python homónimo, y llamarla con algunos de los siguientes parámetros principales:
+
+\begin{itemize}
+	\item \texttt{nteams} $\Rightarrow$ el número de equipos que competirán en la liga.
+	\item \texttt{nmain, nsubs} $\Rightarrow$ simbolizan, respectivamente, el número de jugadores titulares y suplentes que tendrá cada equipo.
+\end{itemize}
+
+El resto de los parámetros son algunos valores numéricos que ajustan los movimientos de los jugadores. En particular, se hablará de dos de ellos en el siguiente apartado.
+
+\subsection{Ideology Algorithm (IA)}
+
+El algoritmo IA ha sido el único del que se ha encontrado código en Python, en particular en este repositorio en GitHub, implementado por Néstor Rodríguez \cite{ia-github}. Por lo tanto, para este estudio no se ha tenido que implementar el algoritmo desde cero sino que, mediante un \textit{fork} del repositorio, se han hecho los retoques que han sido necesarios para que funcione de manera similar al resto de algoritmos, y pueda devolver los mismos valores en el mismo formato, esencialmente.
+
+Por la forma de implementación del algoritmo hay que tratarlo un poco distinto. Con la nueva implementación en el \textit{fork}, accesible desde el GitHub del proyecto (ver README) \cite{repositorio-tfg}, se puede importar la clase \texttt{IA} del fichero del mismo nombre, pero para poder realizar la ejecución es necesario primero crear el objeto con sus parámetros y luego llamar a su método \texttt{ideology\_algorithm}.
+
+Cabe destacar que el objeto no se reinicia una vez que se termina la ejecución del algoritmo y por tanto hay que utilizar un nuevo objeto cada vez si se quiere repetir cada ejecución una serie de veces, como ha sido el caso en este estudio.
+
+Los parámetros más a destacar de este algoritmo son:
+
+\begin{itemize}
+	\item \texttt{n\_parties} $\Rightarrow$ define el número de partidos del problema.
+	\item \texttt{politicians} $\Rightarrow$ define el tamaño de la población inicial. El número de políticos entre el número de partidos debe ser exacto para que el algoritmo no lance un error.
+	\item \texttt{desertion\_threshold} $\Rightarrow$ define el umbral que determina cuándo un miembro del partido se siente descontento dentro del mismo.
+\end{itemize}
+
+\section{Dificultades encontradas: ambigüedades y falta de información}
+
+Texto de introducción a lo que se va a ver en este apartado.
+
 \section{Imperialist Competitive Algorithm (ICA)}
+
+En el código fuente que el autor subió a la página \textbf{MathWorks} \cite{ica-matlab} hay algunos detalles que cambian con respecto al \textit{paper}, y que se han añadido en la implementación en Python. En este caso se trata de un componente de revolución que puede afectar a algunas colonias en cada iteración, y que permite que cambien radicalmente de posición. Gracias a este componente aleatorio se podría llegar a explorar una zona del espacio de búsqueda a la que no se haya llegado anteriormente y que aporte una mejor solución.

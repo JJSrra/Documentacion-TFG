@@ -8,8 +8,6 @@ Los algoritmos se analizarán en orden cronológico, siendo el más antiguo de t
 
 El primer algoritmo a analizar, \textbf{Imperialist Competitive Algorithm} o, según sus siglas, \textbf{ICA}, fue presentado por primera vez en 2007 por Atashpaz-Gargari y Lucas \cite{ica-conference}. Se trata de un algoritmo que podría ser agrupado en la subcategoría de socioinspirados basados en conquistas y colonialismo, como lo han hecho Kumar et al. \cite{socio-evolution-algorithm}.
 
-La implementación del ICA en Python no pudo ser encontrada en internet, sin embargo sí que se encontró el código fuente en MATLAB, subido por el propio autor del \textit{paper} \cite{ica-matlab}. Este código se ha usado como referencia para implementarlo de forma similar en Python, ya que algunos detalles varían con respecto a la literatura.
-
 Este algoritmo parte de la idea de un mundo completamente colonialista, plagado de países que luchan por alzarse vencedores y conquistadores. En esta guerra constante, los países con más poder se volverían los líderes, y podrían contar con numerosas colonias a su servicio. Por otra parte, aquellos países que no pueden vencer a los demás se verían relegados a ocupar un puesto de colonia para siempre.
 
 Durante la guerra también se puede producir una revolución o alzamiento de una de las colonias contra su propio imperio. Si esta colonia resulta ser más poderosa que el actual líder, dicha posición pasa a ser suya. También puede darse el caso totalmente opuesto; si una colonia resulta realmente débil, un imperio colindante puede absorberla y hacerse más fuerte gracias a ella. Y por supuesto, un imperio puede ser colonizado al completo por otro, haciéndose así cargo de sus colonias restantes y del propio país imperial.
@@ -79,8 +77,6 @@ La competición imperialista que tiene lugar en cada iteración del bucle princi
 
 Una vez que un imperio se quede sin colonias, este pasa a ser absorbido por el imperio más fuerte, y la cantidad de imperialistas se reduce. El proceso se repite en cada iteración del bucle hasta que quede solamente un imperio que contenga todas las colonias; en tal caso, a partir de esa iteración en el bucle principal solamente se moverán las colonias hacia nuevas posiciones, tratando de explorar las cercanías del país imperialista.
 
-Como se ha mencionado antes, en el código fuente que el autor subió a la página \textbf{MathWorks} \cite{ica-matlab} hay algunos detalles que cambian con respecto al paper, y que se han añadido en la implementación en Python. En este caso se trata de un componente de revolución que puede afectar a algunas colonias en cada iteración, y que permite que cambien radicalmente de posición. Gracias a este componente aleatorio se podría llegar a explorar una zona del espacio de búsqueda a la que no se haya llegado anteriormente y que aporte una mejor solución.
-
 Para concluir el análisis del ICA, se puede afirmar con certeza que basa muchísimo su comportamiento en los algoritmos de \textbf{Particle Swarm Optimization (PSO)}. En este caso, cada imperio funcionaría como un algoritmo PSO en sí, siendo las partículas las colonias y la mejor posición la del país imperialista. La principal variación consiste en que el algoritmo simula varios PSO compitiendo entre sí, aunque mezclando sus partículas mediante revoluciones o intercambiándolas en el proceso. La propuesta es interesante y una de las primeras en aportar un enfoque colonialista al planteamiento del algoritmo, por lo que resultó especialmente interesante para el estudio.
 
 El punto crítico al algoritmo viene en torno a la exploración del espacio de búsqueda. Para ello es necesario distinguir bien en este caso cuál es la fase de exploración y cuál la de explotación. En este algoritmo se produce una exploración del espacio de búsqueda cuando hay varios imperios, y además las colonias del imperio se encuentran suficientemente separadas del imperialista como para que su avance hacia él permita valorar un considerable número de posiciones en los alrededores, pero no en las inmediaciones. Esta búsqueda en las posiciones más cercanas a la mejor solución es la que se considera la explotación, cuyo principal objetivo es comprobar si en las cercanías hay alguna posibilidad de mejora para apuntillar la solución. Esta fase suele darse en las iteraciones más avanzadas del algoritmo, cuando ya se tiene más o menos claro dónde puede estar el óptimo.
@@ -90,8 +86,6 @@ Si bien se ha comentado lo interesante de la propuesta para que no se caiga de i
 \section{Parliamentary Optimization Algorithm (POA)}
 
 El segundo algoritmo en la lista cronológica es \textbf{Parliamentary Optimization Algorithm}, o \textbf{POA} acorde a sus siglas, que fue presentado en 2008 \cite{poa-article} en la revista \textit{International Journal of Innovative Computing, Information \& Control}, también conocida como \textit{IJICIC}. Este algoritmo está englobado en el apartado de socioinspirados basados en ideologías socio-políticas, obviamente en la vertiente de políticas.
-
-Del algoritmo POA no ha sido posible encontrar código fuente, ni siquiera en MATLAB, por lo que la implementación es de autoría propia basada únicamente en lo que refleja el artículo, siendo lo más fiel posible a lo explicado en el mismo.
 
 Esta propuesta simula ubicarse dentro de un marco político, en un parlamento. En el mismo tendrán cabida una serie de partidos políticos que tratarán de hacerse con el control del gobierno. Dentro de cada uno tendrá lugar una competición por ascender hasta los puestos de candidato del partido, donde los distintos miembros pueden evolucionar hasta parecerse a sus candidatos, y si alguno de ellos aporta soluciones diferentes y mejores, incluso sucederles en el cargo.
 
@@ -250,16 +244,6 @@ Este algoritmo no es muy complejo en cuanto a instrucciones se refiere, sin emba
 
 En primer lugar es conveniente notar que todo el peso de este algoritmo recae sobre las decisiones de movimiento dado que es realmente lo que tiene carga de trabajo en cada iteración. Este algoritmo solamente debe mantener la mejor posición que cada individuo ha conseguido hasta esa iteración y utilizar tres fórmulas matemáticas que determinen la nueva posición acorde a cada movimiento. La cuestión es averiguar si dichas fórmulas son suficiente para hallar una solución óptima en el espacio de búsqueda.
 
-!!
-
-!!
-
-\textbf{(Duda: ¿incluir todas las fórmulas aquí? ¿Hablar de la mutación que yo he añadido?)}
-
-!!
-
-!!
-
 El movimiento basado en su situación actual viene determinado por un parámetro definido como el autor como <<inestabilidad>> (\textit{fickleness}) o tendencia al cambio. Un valor bajo de este atributo indicará al individuo que debería seguir explorando el espacio por sus cercanías, mientras que un valor alto repercutirá en que actúe de forma individualista y cambie radicalmente de posición.
 
 En el movimiento basado en el resto de la sociedad influye, por supuesto, la mejor solución que el individuo puede encontrar en la iteración actual. Él conoce la posición del resto de sus compañeros, y sabe en quién debe fijarse, pero en lugar de automáticamente copiarlo calcula un <<índice de irregularidad externa>>. De nuevo existe un umbral relacionado con este índice que determina si el individuo debe proceder a desplazarse hacia la mejor posición de la iteración actual o por el contrario se rebela y actúa por su cuenta generando una posición alejada de la misma.
@@ -273,8 +257,6 @@ Este algoritmo también basa su funcionamiento en un \textbf{Particle Swarm Opti
 \section{Soccer League Competition (SLC)}
 
 El siguiente algoritmo en orden cronológico es el \textbf{Soccer League Competition}, \textbf{SLC} según sus siglas. Fue presentado en 2014 por Moosavian y Kasaee Roodsari \cite{slc-nonlinear-eq}, en una propuesta para resolver ecuaciones no lineales. Más adelante el propio Moosavian ha presentado otras publicaciones aplicando este algoritmo a problemas de la mochila (\textit{knapsack problems}) \cite{slc-knapsack} y a un problema más real, como la distribución de agua en una red \cite{slc-article}. El algoritmo puede ubicarse en el subapartado de socioinspirados basados en comportamiento competitivo, según Kumar et al. \cite{socio-evolution-algorithm}
-
-El autor del algoritmo subió el código a MathWorks \cite{slc-matlab} por lo que se pudo utilizar este código como referencia para la implementación en Python. Tras leer detenidamente las publicaciones, se ha seguido principalmente la estructura de este código apoyándose en los detalles explicados en los \textit{papers}.
 
 En este algoritmo se ubica el problema en un marco deportivo, en particular en una liga de fútbol. La población está constituida por equipos, cada uno de ellos con sus diferentes jugadores. A su vez, se distingue entre jugadores titulares y suplentes, y unos lógicamente tienen más importancia que los otros. En este panorama el objetivo de cada jugador es llegar a ser el mejor de la liga, o en su defecto al menos ser lo suficientemente bueno como para que los mejores equipos de la competición quieran contar con él en su plantilla.
 
