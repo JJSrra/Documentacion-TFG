@@ -100,8 +100,34 @@ Los parámetros más a destacar de este algoritmo son:
 
 \section{Dificultades encontradas: ambigüedades y falta de información}
 
-Texto de introducción a lo que se va a ver en este apartado.
+En este apartado se realizará una crítica a aquellas malas prácticas relacionadas con la publicación de \textit{papers} que se han cruzado en el camino de este estudio, y que han limitado su desarrollo por momentos, o lo han complicado en exceso.
 
-\section{Imperialist Competitive Algorithm (ICA)}
+\subsection{Imperialist Competitive Algorithm (ICA)}
 
-En el código fuente que el autor subió a la página \textbf{MathWorks} \cite{ica-matlab} hay algunos detalles que cambian con respecto al \textit{paper}, y que se han añadido en la implementación en Python. En este caso se trata de un componente de revolución que puede afectar a algunas colonias en cada iteración, y que permite que cambien radicalmente de posición. Gracias a este componente aleatorio se podría llegar a explorar una zona del espacio de búsqueda a la que no se haya llegado anteriormente y que aporte una mejor solución.
+En el código fuente que el autor subió a la página \textbf{MathWorks} \cite{ica-matlab} hay algunos detalles que cambian con respecto al \textit{paper}. Ante la ambigüedad existente entre teoría e implementación, para este estudio se ha tomado la decisión de implementar en Python lo obtenido en el código. En este caso se trata de un componente de revolución que puede afectar a algunas colonias en cada iteración, y que permite que cambien radicalmente de posición. Gracias a este componente aleatorio se podría llegar a explorar una zona del espacio de búsqueda a la que no se haya llegado anteriormente y que aporte una mejor solución.
+
+No obstante, implementar esta funcionalidad no ha supuesto un gran gasto de tiempo, ya que aparte de tratarse de una operación sencilla existía código de referencia en el que basarse.
+
+\subsection{Parliamentary Optimization Algorithm (POA)}
+
+Sobre el \textit{paper} de este algoritmo no existe queja alguna. Los parámetros con los que se han realizado los experimentos están bien definidos, las fórmulas son claras y el planteamiento del problema está bien enfocado. Implementar este algoritmo no supuso ningún impedimento adicional a la carga de trabajo ya expuesta en su correspondiente capítulo. Lo único que puede recriminarse a los autores es no haber compartido el código, una práctica por desgracia habitual en el mundillo.
+
+\subsection{Social Emotional Optimization Algorithm (SEA)}
+
+Sobre el SEA sí conviene hablar de la falta de información, uno de los mayores problemas a los que se debe enfrentar quien quiera implementar un algoritmo en base a la información de una publicación. Muchos algoritmos requieren de parámetros que modifican los desplazamientos, o que determinan la decisión a tomar por una solución en un momento determinado. Sin estos parámetros es muy complicado tanto reproducir los experimentos que se han hecho en la publicación como obtener buenas soluciones trabajando con dicho algoritmo sobre otras funciones. Además, en algunos casos ni siquiera se indica un rango de valores en el que se puedan inferir dichos parámetros.
+
+En el caso del SEA se tratan de los parámetros \textit{k1, k2} y \textit{k3}. Al no definirse un valor para los mismos, ni siquiera un dominio estimado, estos han tenido que ser determinados mediante la experimentación. En una muestra básica de 4 funciones se comprobaron distintas combinaciones de estos parámetros para utilizar la mejor en los experimentos con el benchmark. Esta tarea, aparte de no asegurar un resultado óptimo, podía haberse evitado con una definición correcta y completa del problema en el \textit{paper}.
+
+\subsection{Anarchic Society Optimization (ASO)}
+
+El caso del algoritmo ASO ha resultado especialmente complicado, ya que no solamente omite valores para parámetros vitales en las fórmulas, sino que ni siquiera especifica el operador de movimiento. Es decir, las publicaciones leídas sobre este algoritmo admiten la existencia de los parámetros, pero el único dato que aportan sobre ellos es su rango, o simplemente que no deben ser negativos.
+
+Para solventar este problema en este caso se han tomado valores medios para los que se especifica un rango, y para el resto se ha realizado una prueba similar a la que se ha hecho para el algoritmo SEA. Por desgracia no se puede asegurar que la estimación sea óptima pero eso requeriría de un trabajo mucho más extenso.
+
+\subsection{Soccer League Competition (SLC)}
+
+El algoritmo SLC no especifica algunos parámetros en el paper pero al menos el autor subió el código para poder extraerlos de ahí. Lo cual provocó otro problema derivado, la ambigüedad entre código y teoría, como ha pasado en el otro ejemplo del que existe código fuente, el ICA.
+
+Para el caso del SLC hay tanto cosas especificadas en la teoría y no en el código como al contrario. En el código aparece una modificación para los jugadores que pierden partidos, y además una función bastante extensa, mientras que en la teoría no se hace referencia al movimiento de los jugadores que salen derrotados. Con respecto a lo que aparece en la teoría pero no en la práctica, se trata del descenso de equipos cuando acaba la temporada. Basándose en lo que dicta el \textit{paper} del algoritmo se podría pensar que en el código aparecería así, pero no.
+
+La táctica a seguir ha sido implementar lo que aparece en la implementación del autor, si es que esta existe, ya que se entiende que es el código final sobre el que ha hecho las ejecuciones de su benchmark de funciones.
