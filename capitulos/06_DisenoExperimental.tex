@@ -1,228 +1,115 @@
 \chapter{Diseño experimental}
 
+En este capítulo se analizará cómo se ha realizado el estudio de los algoritmos. Se comentará el benchmark de funciones que se ha utilizado, cómo se han diseñado los experimentos para poder ser ejecutados individualmente permitiendo paralelismos y cómo se han recopilado los datos.
+
+Los algoritmos socioinspirados no han competido hasta ahora de forma profesional en las competiciones de los \textbf{Congress of Evolutionary Computation (CEC)}, por lo que ponerlos a evaluar funciones muy recientes podría ser precipitado. En su lugar, para este primer estudio de los algoritmos se ha preferido utilizar un benchmark que, aparte de ser un poco más sencillo que los más actuales, es más intuitivo de interpretar. Se trata del benchmark utilizado en el \textbf{CEC2005} \cite{cec2005-website}, compuesto por:
+
+\begin{itemize}
+	\item 5 funciones unimodales
+	\item 20 funciones multimodales, de las cuales:
+	\begin{itemize}
+		\item 7 básicas
+		\item 2 expandidas
+		\item 11 híbridas compuestas
+	\end{itemize}
+\end{itemize}
+
+Existe un estudio detallado \cite{cec2005-functions} de las funciones de este benchmark que ha sido de mucha utilidad a la hora de tratarlas, de conocer sus propiedades e incluso de obtener una representación gráfica que ayude a visualizar los puntos óptimos. Este estudio servirá de referencia a la hora de analizar los resultados reflejados por el los algoritmos en cada una de las funciones del benchmark.
+
+Para realizar los experimentos se han construido 10 scripts por cada algoritmo, 5 para problemas de dimensión 10 y 5 para los de dimensión 30, ejecutándose en cada uno de ellos un total de 5 funciones. El objetivo de dividir el trabajo en varios scripts es aprovecharse del paralelismo disponible al contar con el cluster Hércules \cite{cluster-hercules}, ya que como además las evaluaciones de una y otra función no dependen entre ellas no es necesario recopilar los datos con un modelo map-reduce.
+
+Cada función se ejecuta un total de 10 veces, recopilando el valor medio obtenido al final de las evaluaciones para cada una de esas ejecuciones. A fin de hacer cada experimento divisible del resto a la vez que reproducible, se fija una semilla para valores aleatorios previamente a cada función. Si la semilla se fija correctamente antes de que se procese el bucle que ejecuta el algoritmo 10 veces se obtendrá siempre el mismo conjunto de resultados. Es muy importante no confundir esto con inicializar la semilla dentro del bucle, lo que provocaría tener el mismo resultado en cada una de las 10 veces, y por tanto lo haría inútil.
+
+Como suele ser habitual en los problemas de este estilo, el número máximo de evaluaciones por ejecución viene determinado por la dimensión del problema, siendo $10000 \times dim$ la fórmula en cuestión. Para cada algoritmo se extraen además los datos de convergencia para poder mostrarlos en una gráfica. Estos datos aportarán conocimiento sobre cómo de necesarias son todas las evaluaciones, o qué algoritmos encuentran el óptimo más rápido.
+
+Para todos los algoritmos se ha elegido una población de tamaño 30 tanto para dimensión 10 como para dimensión 30. Esta limitación en el tamaño para la versión de dimensión 30 permitirá apreciar en los resultados qué algoritmos se adaptan mejor con un margen de exploración más reducido.
+
+A continuación se incluyen en tablas los parámetros que se han escogido para la experimentación para cada algoritmo.
+
+\begin{table}[H]
+	\centering
+		$\begin{tabular}{ *{2}{c}| *{2}{c} }
+		\toprule
+		\textbf{Parámetro} & \textbf{Valor} & \textbf{Parámetro} & \textbf{Valor} \\
+		\midrule
+		\textbf{Núm. Imperialistas} &  8 & \textbf{$\zeta$}& 0.1\\ 
+		\textbf{Ratio revolución } & 0.3 & \textbf{Ratio frenada} & 0.99 \\ 
+		\textbf{Coef. Asimilación} & 2 & \textbf{Umbral unificación} & 3 \\ 
+		\textbf{Coef. Ángulo Asimilación} & $\frac{\pi}{4}$ \\ 
+		\bottomrule
+		\end{tabular}$
+	\caption{Parámetros de ejecución del ICA.}
+\end{table}
+
 \begin{table}[H]
 	\centering
 	\resizebox{\textwidth}{!}{
-		$\begin{tabular}{ *{5}{c} }
+		$\begin{tabular}{ *{2}{c}| *{2}{c} }
 		\toprule
-		\textbf{Algoritmo} & \textbf{Mínimo} & \textbf{Máximo} & \textbf{Media} & \textbf{Tiempo medio de ejecución}\\
+		\textbf{Parámetro} & \textbf{Valor} & \textbf{Parámetro} & \textbf{Valor} \\
 		\midrule
-		\textbf{ICA} & 3200.22285 & 8687.95517 & 6255.44873 & 4.64 segundos\\
-		\textbf{POA} & 9676.86956 & 21611.17396 & 14152.29704 & 15.15 segundos\\
-		\textbf{SEA} & -449.90955 & -325.36795 & -436.52292 & 7.02 segundos\\
-		\textbf{ASO} & -449.69745 & -437.06254 & -444.92863 & 9.27 segundos\\
-		\textbf{SLC} & -450.0 & -450.0 & -450.0 & 7.69 segundos\\
+		\textbf{Núm. Partidos} &  6 & \textbf{Probabilidad de unión}& 0.01\\ 
+		\textbf{Núm. Miembros} & 5 & \textbf{Probabilidad de eliminación} & 0.001 \\ 
+		\textbf{Núm. Candidatos} & 2 & \textbf{Miembros a unir} & 2 \\ 
+		\textbf{Ratio Peso Miembros} & 0.01 & \textbf{Miembros a eliminar} & 1\\ 
+		\textbf{Ratio Peso Candidatos} & 1 & \textbf{Sesgo} & 0.3 \\
 		\bottomrule
 		\end{tabular}$
 	}
-	\caption{Resultados de la función 1 <<Shifted Sphere Function>> para dimensión 10.}
+	\caption{Parámetros de ejecución del POA.}
 \end{table}
 
-\begin{figure}[h]
+\begin{table}[H]
 	\centering
-	\includegraphics[scale=0.6]{imagenes/convergencia-10-17.pdf}
-	\caption{Gráfica de convergencia de la función 17 para dimensión 10.}
-	\label{convergencia-10-17}
-\end{figure}
+		$\begin{tabular}{ *{2}{c}| *{2}{c} }
+		\toprule
+		\textbf{Parámetro} & \textbf{Valor} & \textbf{Parámetro} & \textbf{Valor} \\
+		\midrule
+		\textbf{$k1$} &  0.1 & $\Delta$ & 0.05\\ 
+		\textbf{$k2$} & 0.4 & \textbf{Umbral inferior} & 0.3 \\ 
+		\textbf{$k3$} & 0.4 & \textbf{Umbral superior} & 0.6 \\ 
+		\bottomrule
+		\end{tabular}$
+	\caption{Parámetros de ejecución del SEA.}
+\end{table}
 
-\begin{table}
+\begin{table}[H]
 	\centering
-	\resizebox{\textwidth}{!}{
-	\begin{tabular}{lccccccc}
+		$\begin{tabular}{ *{2}{c}| *{2}{c} }
 		\toprule
-		{} &        \textbf{ASO} &          \textbf{IA} &        \textbf{ICA} &        \textbf{POA} &        \textbf{PSO} &        \textbf{SEA} &        \textbf{SLC} \\
+		\textbf{Parámetro} & \textbf{Valor} & \textbf{Parámetro} & \textbf{Valor} \\
 		\midrule
-		\textbf{F01}  &  5.071e+00 &   2.398e+00 &  6.705e+03 &  1.460e+04 &  2.828e+03 &  1.348e+01 &  \textbf{0.000e+00} \\
-		\textbf{F02}  &  1.980e+02 &   3.227e-03 &  9.925e+03 &  1.297e+04 &  1.719e+04 &  1.292e+02 &  \textbf{1.160e-08 }\\
-		\textbf{F03}  &  1.137e+06 &   \textbf{2.127e-01 }&  5.012e+07 &  1.251e+08 &  9.043e+07 &  5.509e+06 &  2.971e+04 \\
-		\textbf{F04}  &  6.140e+01 &   6.122e+01 &  1.169e+04 &  1.365e+04 &  7.709e+04 &  9.347e+02 &  \textbf{3.592e-05} \\
-		\textbf{F05}  &  8.036e+02 &  \textbf{-8.208e-01} &  8.684e+03 &  1.901e+04 &  1.752e+04 &  6.230e+02 &  4.590e-03 \\
-		\midrule
-		\textbf{F06}  &  1.388e+04 &   \textbf{8.037e-01} &  9.836e+08 &  3.383e+09 &  3.263e+08 &  2.764e+04 &  8.802e+01 \\
-		\textbf{F07}  &  5.061e+00 &   1.267e+03 &  1.259e+03 &  3.131e+03 &  2.253e+03 &  1.920e+03 &  \textbf{5.673e-01} \\
-		\textbf{F08}  &  2.035e+01 &   2.040e+01 &  2.053e+01 &  2.093e+01 &  2.022e+01 &  2.028e+01 &  \textbf{2.019e+01} \\
-		\textbf{F09}  &  3.529e+00 &   \textbf{2.836e+00} &  7.433e+01 &  8.867e+01 &  1.201e+02 &  3.292e+01 &  3.881e+00 \\
-		\textbf{F10}  &  9.487e+00 &  \textbf{-5.017e+00} &  9.884e+01 &  1.162e+02 &  2.073e+02 &  2.739e+01 &  4.584e+00 \\
-		\textbf{F11}  &  7.778e+00 &   \textbf{2.017e+00} &  1.028e+01 &  1.345e+01 &  7.542e+00 &  8.258e+00 &  3.801e+00 \\
-		\textbf{F12}  &  1.230e+03 &   \textbf{4.986e+01} &  5.419e+04 &  1.107e+05 &  5.515e+04 &  2.686e+03 &  4.385e+02 \\
-		\midrule
-		\textbf{F13}  &  \textbf{5.364e-01} &   7.787e+00 &  1.014e+01 &  9.040e+00 &  6.991e+00 &  2.393e+00 &  5.710e-01 \\
-		\textbf{F14}  &  3.754e+00 &   4.528e+00 &  4.111e+00 &  4.501e+00 &  4.853e+00 &  3.606e+00 &  \textbf{2.460e+00} \\
-		\midrule
-		\textbf{F15}  &  2.538e+02 &   \textbf{0.000e+00} &  6.972e+02 &  9.631e+02 &  7.499e+02 &  4.281e+02 &  2.721e+02 \\
-		\textbf{F16}  &  1.216e+02 &   1.564e+02 &  3.968e+02 &  6.118e+02 &  5.502e+02 &  1.679e+02 &  \textbf{1.108e+02} \\
-		\textbf{F17}  &  5.554e+01 &   8.105e+01 &  8.380e+01 &  1.128e+02 &  2.099e+02 &  9.551e+01 &  \textbf{3.215e+01} \\
-		\textbf{F18}  &  7.774e+02 &   \textbf{3.000e+02} &  1.129e+03 &  1.383e+03 &  1.245e+03 &  1.037e+03 &  8.838e+02 \\
-		\textbf{F19}  &  8.096e+02 &   \textbf{3.000e+02} &  1.161e+03 &  1.383e+03 &  1.194e+03 &  8.563e+02 &  8.373e+02 \\
-		\textbf{F20}  &  8.158e+02 &   \textbf{3.000e+02} &  1.161e+03 &  1.383e+03 &  1.267e+03 &  9.720e+02 &  8.648e+02 \\
-		\textbf{F21}  &  7.045e+02 &   \textbf{2.178e+02} &  1.340e+03 &  1.424e+03 &  1.384e+03 &  8.994e+02 &  6.702e+02 \\
-		\textbf{F22}  &  7.250e+02 &   \textbf{3.344e+02} &  1.076e+03 &  1.350e+03 &  1.248e+03 &  8.940e+02 &  6.624e+02 \\
-		\textbf{F23}  &  9.590e+02 &   \textbf{1.997e+02} &  1.317e+03 &  1.474e+03 &  1.391e+03 &  1.071e+03 &  9.556e+02 \\
-		\textbf{F24}  &  2.365e+02 &   \textbf{2.032e+02} &  1.164e+03 &  1.446e+03 &  1.459e+03 &  8.663e+02 &  2.800e+02 \\
-		\textbf{F25}  &  5.109e+02 &   \textbf{2.113e+02} &  1.101e+03 &  2.118e+03 &  1.214e+03 &  5.243e+02 &  5.188e+02 \\
-		\midrule
-		\textbf{Best} &          1 &          \textbf{16} &          0 &          0 &          0 &          0 &          8 \\
+		\textbf{Ratio Inestabilidad} &  0.5 & \textbf{Ratio Evolución}& 0.5\\ 
+		\textbf{Ratio Externo} & 3 & \textbf{Ratio Interno} & 1 \\ 
+		\textbf{Umbral Externo} & 0.5 & \textbf{Umbral Interno} & 0.5 \\ 
 		\bottomrule
-	\end{tabular}}
-	\caption{Resultados medios del benchmark CEC2005 para dimensión 10.}
+		\end{tabular}$
+	\caption{Parámetros de ejecución del ASO.}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
 	\centering
-	\resizebox{\textwidth}{!}{
-	\begin{tabular}{lccccccc}
-		\toprule
-		{} &    \textbf{ASO} &     \textbf{IA} &    \textbf{ICA} &    \textbf{POA} &    \textbf{PSO} &    \textbf{SEA} &    \textbf{SLC} \\
-		\midrule
-		\textbf{F01}  &      3 &      2 &      6 &      7 &      5 &      4 &      \textbf{1} \\
-		\textbf{F02}  &      4 &      2 &      5 &      6 &      7 &      3 &      \textbf{1} \\
-		\textbf{F03}  &      3 &      \textbf{1} &      5 &      7 &      6 &      4 &      2 \\
-		\textbf{F04}  &      3 &      2 &      5 &      6 &      7 &      4 &      \textbf{1} \\
-		\textbf{F05}  &      4 &      \textbf{1} &      5 &      7 &      6 &      3 &      2 \\
-		\midrule
-		\textbf{F06}  &      3 &      \textbf{1} &      6 &      7 &      5 &      4 &      2 \\
-		\textbf{F07}  &      2 &      4 &      3 &      7 &      6 &      5 &      \textbf{1} \\
-		\textbf{F08}  &      4 &      5 &      6 &      7 &      2 &      3 &      \textbf{1} \\
-		\textbf{F09}  &      2 &      \textbf{1} &      5 &      6 &      7 &      4 &      3 \\
-		\textbf{F10}  &      3 &      \textbf{1} &      5 &      6 &      7 &      4 &      2 \\
-		\textbf{F11}  &      4 &      \textbf{1} &      6 &      7 &      3 &      5 &      2 \\
-		\textbf{F12}  &      3 &      \textbf{1} &      5 &      7 &      6 &      4 &      2 \\
-		\midrule
-		\textbf{F13}  &      \textbf{1} &      5 &      7 &      6 &      4 &      3 &      2 \\
-		\textbf{F14}  &      3 &      6 &      4 &      5 &      7 &      2 &      \textbf{1} \\
-		\midrule
-		\textbf{F15}  &      2 &      \textbf{1} &      5 &      7 &      6 &      4 &      3 \\
-		\textbf{F16}  &      2 &      3 &      5 &      7 &      6 &      4 &      \textbf{1} \\
-		\textbf{F17}  &      2 &      3 &      4 &      6 &      7 &      5 &      \textbf{1} \\
-		\textbf{F18}  &      2 &      \textbf{1} &      5 &      7 &      6 &      4 &      3 \\
-		\textbf{F19}  &      2 &      \textbf{1} &      5 &      7 &      6 &      4 &      3 \\
-		\textbf{F20}  &      2 &      \textbf{1} &      5 &      7 &      6 &      4 &      3 \\
-		\textbf{F21}  &      3 &      \textbf{1} &      5 &      7 &      6 &      4 &      2 \\
-		\textbf{F22}  &      3 &      \textbf{1} &      5 &      7 &      6 &      4 &      2 \\
-		\textbf{F23}  &      3 &      \textbf{1} &      5 &      7 &      6 &      4 &      2 \\
-		\textbf{F24}  &      2 &      \textbf{1} &      5 &      6 &      7 &      4 &      3 \\
-		\textbf{F25}  &      2 &      \textbf{1} &      5 &      7 &      6 &      4 &      3 \\
-		\midrule
-		\textbf{Mean} &  2.680 &  \textbf{1.920} &  5.080 &  6.640 &  5.840 &  3.880 &  1.960 \\
-		\bottomrule
-	\end{tabular}}
-	\caption{Ranking de resultados del benchmark CEC2005 para dimensión 10.}
+	$\begin{tabular}{ *{2}{c}| *{2}{c} }
+	\toprule
+	\textbf{Parámetro} & \textbf{Valor} & \textbf{Parámetro} & \textbf{Valor} \\
+	\midrule
+	\textbf{Núm. Equipos} &  5 & \textbf{Probabilidad de mutación}& 0.1\\ 
+	\textbf{Núm. Titulares} & 3 & \textbf{Ratio de mutación} & 0.2 \\ 
+	\textbf{Núm. Suplentes} & 3 \\
+	\bottomrule
+	\end{tabular}$
+	\caption{Parámetros de ejecución del SLC.}
 \end{table}
 
-\begin{table}
-	\resizebox{\textwidth}{!}{
-	\begin{tabular}{lcccccc}
-		\toprule
-		{} &        \textbf{ASO} &        \textbf{ICA} &        \textbf{POA} &        \textbf{PSO} &        \textbf{SEA} &        \textbf{SLC} \\
-		\midrule
-		\textbf{F01}  &  1.288e+02 &  6.173e+04 &  6.584e+04 &  8.855e+04 &  1.866e+03 &  \textbf{0.000e+00 }\\
-		\textbf{F02}  &  2.489e+03 &  7.734e+04 &  8.917e+04 &  1.313e+05 &  1.220e+04 &  \textbf{1.179e-02 }\\
-		\textbf{F03}  &  1.602e+07 &  1.194e+09 &  1.466e+09 &  1.633e+09 &  2.487e+07 &  \textbf{5.643e+05 }\\
-		\textbf{F04}  &  1.092e+04 &  1.054e+05 &  8.943e+04 &  5.277e+05 &  3.946e+04 &  \textbf{4.680e+00} \\
-		\textbf{F05}  &  4.663e+03 &  3.480e+04 &  4.441e+04 &  4.695e+04 &  1.343e+04 &  \textbf{4.157e+03} \\
-		\midrule
-		\textbf{F06}  &  1.317e+07 &  3.827e+10 &  2.916e+10 &  6.250e+10 &  1.173e+08 &  \textbf{7.574e+02} \\
-		\textbf{F07}  &  1.646e+02 &  9.200e+03 &  1.252e+04 &  1.069e+04 &  5.696e+03 &  \textbf{3.926e-01} \\
-		\textbf{F08}  &  2.097e+01 &  2.112e+01 &  2.134e+01 &  \textbf{2.064e+01} &  2.082e+01 &  2.090e+01 \\
-		\textbf{F09}  &  \textbf{2.940e+01} &  4.076e+02 &  4.047e+02 &  4.455e+02 &  2.046e+02 &  9.910e+01 \\
-		\textbf{F10}  &  2.528e+02 &  6.905e+02 &  6.595e+02 &  9.259e+02 &  2.872e+02 &  \textbf{9.004e+01} \\
-		\textbf{F11}  &  3.956e+01 &  4.330e+01 &  4.749e+01 &  3.427e+01 &  3.429e+01 &  \textbf{2.410e+01} \\
-		\textbf{F12}  &  2.710e+04 &  1.512e+06 &  1.579e+06 &  4.473e+05 &  1.481e+05 &  \textbf{9.489e+03} \\
-		\midrule
-		\textbf{F13}  &  3.567e+00 &  1.858e+02 &  4.855e+01 &  1.075e+02 &  1.657e+01 &  \textbf{3.425e+00} \\
-		\textbf{F14}  &  1.352e+01 &  1.381e+01 &  1.437e+01 &  1.488e+01 &  1.337e+01 &  \textbf{1.207e+01} \\
-		\midrule
-		\textbf{F15}  & \textbf{ 2.950e+02} &  1.049e+03 &  1.200e+03 &  9.587e+02 &  6.849e+02 &  5.160e+02 \\
-		\textbf{F16}  &  \textbf{8.460e+01} &  9.486e+02 &  1.191e+03 &  8.238e+02 &  4.667e+02 &  2.964e+02 \\
-		\textbf{F17}  &  5.693e+01 &  8.462e+01 &  1.054e+02 &  2.195e+02 &  1.872e+02 &  \textbf{1.831e+01} \\
-		\textbf{F18}  &  9.354e+02 &  1.284e+03 &  1.268e+03 &  1.402e+03 &  9.586e+02 &  \textbf{9.107e+02} \\
-		\textbf{F19}  &  \textbf{9.170e+02} &  1.283e+03 &  1.261e+03 &  1.367e+03 &  9.666e+02 &  9.192e+02 \\
-		\textbf{F20}  &  9.170e+02 &  1.283e+03 &  1.261e+03 &  1.365e+03 &  9.758e+02 &  \textbf{9.094e+02} \\
-		\textbf{F21}  &  \textbf{6.006e+02} &  1.412e+03 &  1.386e+03 &  1.419e+03 &  1.066e+03 &  7.375e+02 \\
-		\textbf{F22}  &  9.227e+02 &  1.558e+03 &  1.740e+03 &  1.599e+03 &  1.193e+03 &  \textbf{9.108e+02} \\
-		\textbf{F23}  &  9.780e+02 &  1.383e+03 &  1.385e+03 &  1.422e+03 &  1.211e+03 &  \textbf{9.097e+02} \\
-		\textbf{F24}  &  \textbf{2.021e+02} &  1.468e+03 &  1.464e+03 &  1.602e+03 &  1.220e+03 &  9.086e+02 \\
-		\textbf{F25}  &  \textbf{3.574e+02} &  1.746e+03 &  1.978e+03 &  1.563e+03 &  9.508e+02 &  3.995e+02 \\
-		\midrule
-		\textbf{Best} &          7 &          0 &          0 &          1 &          0 &         \textbf{17} \\
-		\bottomrule
-	\end{tabular}}
-	\caption{Resultados medios del benchmark CEC2005 para dimensión 30.}
-\end{table}
-
-\begin{table}
-	\resizebox{\textwidth}{!}{
-	\begin{tabular}{lcccccc}
-		\toprule
-		{} &    \textbf{ASO} &    \textbf{ICA} &    \textbf{POA} &    \textbf{PSO} &    \textbf{SEA} &    \textbf{SLC} \\
-		\midrule
-		\textbf{F01}  &      2 &      4 &      5 &      6 &      3 &      \textbf{1} \\
-		\textbf{F02}  &      2 &      4 &      5 &      6 &      3 &      \textbf{1} \\
-		\textbf{F03}  &      2 &      4 &      5 &      6 &      3 &      \textbf{1} \\
-		\textbf{F04}  &      2 &      5 &      4 &      6 &      3 &      \textbf{1} \\
-		\textbf{F05}  &      2 &      4 &      5 &      6 &      3 &      \textbf{1} \\
-		\midrule
-		\textbf{F06}  &      2 &      5 &      4 &      6 &      3 &      \textbf{1} \\
-		\textbf{F07}  &      2 &      4 &      6 &      5 &      3 &      \textbf{1} \\
-		\textbf{F08}  &      4 &      5 &      6 &      \textbf{1} &      2 &      3 \\
-		\textbf{F09}  &      \textbf{1} &      5 &      4 &      6 &      3 &      2 \\
-		\textbf{F10}  &      2 &      5 &      4 &      6 &      3 &      \textbf{1} \\
-		\textbf{F11}  &      4 &      5 &      6 &      2 &      3 &      \textbf{1} \\
-		\textbf{F12}  &      2 &      5 &      6 &      4 &      3 &      \textbf{1} \\
-		\midrule
-		\textbf{F13}  &      2 &      6 &      4 &      5 &      3 &      \textbf{1} \\
-		\textbf{F14}  &      3 &      4 &      5 &      6 &      2 &      \textbf{1} \\
-		\midrule
-		\textbf{F15}  &      \textbf{1} &      5 &      6 &      4 &      3 &      2 \\
-		\textbf{F16}  &      \textbf{1} &      5 &      6 &      4 &      3 &      2 \\
-		\textbf{F17}  &      2 &      3 &      4 &      6 &      5 &      \textbf{1} \\
-		\textbf{F18}  &      2 &      5 &      4 &      6 &      3 &      \textbf{1} \\
-		\textbf{F19}  &      \textbf{1} &      5 &      4 &      6 &      3 &      2 \\
-		\textbf{F20}  &      2 &      5 &      4 &      6 &      3 &      \textbf{1} \\
-		\textbf{F21}  &      \textbf{1} &      5 &      4 &      6 &      3 &      2 \\
-		\textbf{F22}  &      2 &      4 &      6 &      5 &      3 &      \textbf{1} \\
-		\textbf{F23}  &      2 &      4 &      5 &      6 &      3 &      \textbf{1} \\
-		\textbf{F24}  &      \textbf{1} &      5 &      4 &      6 &      3 &      2 \\
-		\textbf{F25}  &      \textbf{1} &      5 &      6 &      4 &      3 &      2 \\
-		\midrule
-		\textbf{Mean} &  1.920 &  4.640 &  4.880 &  5.200 &  3.000 &  \textbf{1.360} \\
-		\bottomrule
-	\end{tabular}}
-	\caption{Ranking de resultados del benchmark CEC2005 para dimensión 30.}
-\end{table}
-
-\begin{table}
+\begin{table}[H]
 	\centering
-	\begin{tabular}{lrr}
-		\toprule
-		{} &  \textbf{D-10} &   \textbf{D-30} \\
-		\midrule
-		\textbf{ASO} &   1 &   7 \\
-		\textbf{IA}  &  \textbf{16} &   Not available \\
-		\textbf{ICA} &   0 &   0.0 \\
-		\textbf{POA} &   0 &   0.0 \\
-		\textbf{PSO} &   0 &   1 \\
-		\textbf{SEA} &   0 &   0.0 \\
-		\textbf{SLC} &   8 &  \textbf{17} \\
-		\bottomrule
-	\end{tabular}
-	\caption{Mejores soluciones de cada algoritmo para cada dimensión.}
-\end{table}
-
-\begin{table}
-	\centering
-	\begin{tabular}{lrr}
-		\toprule
-		{} &    \textbf{D-10} &    \textbf{D-30} \\
-		\midrule
-		\textbf{ASO} &  2.68 &  1.92 \\
-		\textbf{IA}  &  \textbf{1.92} &   Not available \\
-		\textbf{ICA} &  5.08 &  4.64 \\
-		\textbf{POA} &  6.64 &  4.88 \\
-		\textbf{PSO} &  5.84 &  5.20 \\
-		\textbf{SEA} &  3.88 &  3.00 \\
-		\textbf{SLC} &  1.96 &  \textbf{1.36} \\
-		\bottomrule
-	\end{tabular}
-	\caption{Ranking global de cada algoritmo para cada dimensión.}
+	$\begin{tabular}{ *{2}{c}| *{2}{c} }
+	\toprule
+	\textbf{Parámetro} & \textbf{Valor} & \textbf{Parámetro} & \textbf{Valor} \\
+	\midrule
+	\textbf{Núm. Partidos} &  5 & \textbf{Umbral de deserción} & 10\\ 
+	\textbf{$r$} & 0.5 \\ 
+	\bottomrule
+	\end{tabular}$
+	\caption{Parámetros de ejecución del IA.}
 \end{table}

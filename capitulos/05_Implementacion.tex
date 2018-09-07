@@ -16,6 +16,8 @@ Con respecto a detalles de diseño de los algoritmos, se han implementado como \
 
 Como extra que no incluían las propuestas, y como hay funciones que así lo requieren, se ha implementado para cada algoritmo la posibilidad de incluir un dominio de variables para la población inicial, para aquellos casos en los que el óptimo se encuentre fuera de esos límites que se fijan al inicio del problema.
 
+Por último, a fin de obtener valores de convergencia para las ejecuciones de los algoritmos, se devuelve junto a la mejor solución un vector con los valores mínimos que se obtuvieron cada 10\% de evaluaciones.
+
 \subsection{Imperialist Competitive Algorithm (ICA)}
 
 La implementación del ICA en Python no pudo ser encontrada en internet, sin embargo sí que se encontró el código fuente en MATLAB, subido por el propio autor del \textit{paper} \cite{ica-matlab}. Este código se ha usado como referencia para implementarlo de forma similar en Python, ya que algunos detalles varían con respecto a la literatura.
@@ -128,6 +130,6 @@ Para solventar este problema en este caso se han tomado valores medios para los 
 
 El algoritmo SLC no especifica algunos parámetros en el paper pero al menos el autor subió el código para poder extraerlos de ahí. Lo cual provocó otro problema derivado, la ambigüedad entre código y teoría, como ha pasado en el otro ejemplo del que existe código fuente, el ICA.
 
-Para el caso del SLC hay tanto cosas especificadas en la teoría y no en el código como al contrario. En el código aparece una modificación para los jugadores que pierden partidos, y además una función bastante extensa, mientras que en la teoría no se hace referencia al movimiento de los jugadores que salen derrotados. Con respecto a lo que aparece en la teoría pero no en la práctica, se trata del descenso de equipos cuando acaba la temporada. Basándose en lo que dicta el \textit{paper} del algoritmo se podría pensar que en el código aparecería así, pero no.
+Para el caso del SLC hay tanto cosas especificadas en la teoría y no en el código como al contrario. En el código aparece una modificación para los jugadores que pierden partidos, y además una función bastante extensa, mientras que en la teoría no se hace referencia al movimiento de los jugadores que salen derrotados. Con respecto a lo que aparece en la teoría pero no en la práctica, se trata del descenso de equipos cuando acaba la temporada. Basándose en lo que dicta el \textit{paper} del algoritmo se podría pensar que en el código aparecería así, pero no. Aquí entran en juego dos nuevos parámetros, \texttt{mutation\_probability} y \texttt{mutation\_rate}, que determinan cuántas variables se mutan y en qué proporción, respectivamente.
 
 La táctica a seguir ha sido implementar lo que aparece en la implementación del autor, si es que esta existe, ya que se entiende que es el código final sobre el que ha hecho las ejecuciones de su benchmark de funciones.
