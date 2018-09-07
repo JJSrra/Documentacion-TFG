@@ -2,8 +2,8 @@
 %\documentclass[a4paper,twoside,11pt,titlepage]{book}
 \usepackage{listings}
 \usepackage[utf8]{inputenc}
-\usepackage[spanish]{babel}
 \usepackage{url}
+\usepackage[spanish,es-tabla]{babel}
 
 \usepackage{amsmath}
 \usepackage{algorithm}
@@ -13,6 +13,8 @@
 \usepackage{booktabs}
 \usepackage{tabulary}
 \usepackage{multirow}
+
+
 
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
@@ -39,7 +41,7 @@
 
 \usepackage{longtable}
 
-\usepackage[pdfborder={000}]{hyperref} %referencia
+\usepackage[pdfborder={0 0 0}]{hyperref}
 
 % ********************************************************************
 % Re-usable information
@@ -203,8 +205,7 @@ pdfproducer = {pdflatex}
 \input{capitulos/05_Implementacion}
 \input{capitulos/06_DisenoExperimental}
 \input{capitulos/07_Resultados}
-%
-%\input{capitulos/08_Conclusiones}
+\input{capitulos/08_Conclusiones}
 %
 %%\chapter{Conclusiones y Trabajos Futuros}
 %
